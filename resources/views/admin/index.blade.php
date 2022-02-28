@@ -1,4 +1,4 @@
-@extends('layouts.employee.app')
+@extends('layouts.admin.app')
 @section('title')
 HIPHOP - DASHBOARD
 @endsection
@@ -18,7 +18,7 @@ HIPHOP - DASHBOARD
                     <div class="text-center">
                         <h1 class="mb-1 text-white">Congratulations {{Auth::user()->name;}},</h1>
                         <p class="card-text m-auto w-75">
-                            Kamu Mendapatkan Profit <strong>{{round($percentage)}}%</strong> Pada Penjualan Bulan ini
+                            Kita Mendapatkan Profit <strong>{{round($percentage)}}%</strong> Pada Penjualan Bulan ini
                         </p>
                     </div>
                 </div>
@@ -83,8 +83,8 @@ HIPHOP - DASHBOARD
                         </a>
                     </div>
                     
-                    <div class="table-responsive">
-                        <table class="table mb-0">
+                    <div class="card-datatable">
+                        <table class="datatables-ajax table">
                             <thead>
                                 <tr>
                                     <th>Tanggal Transaksi</th>
@@ -92,7 +92,7 @@ HIPHOP - DASHBOARD
                                     <th>Status</th>
                                     <th>Deskripsi</th>
                                     <th>Kategori</th>
-                                    <th>Option</th>
+                                    <th>User</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -103,23 +103,7 @@ HIPHOP - DASHBOARD
                                         <td>@if($item->status == "1") <span class="badge badge-pill badge-light-success mr-1">Masuk</span> @else <span class="badge badge-pill badge-light-danger mr-1">Keluar</span> @endif</td>
                                         <td>{{$item->description}}</td>
                                         <td>{{$item->Category->name}}</td>
-                                        <td>
-                                            <div class="dropdown">
-                                                <button type="button" class="btn btn-sm dropdown-toggle hide-arrow" data-toggle="dropdown">
-                                                    <i data-feather="more-vertical"></i>
-                                                </button>
-                                                <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="{{route('employee.transaction.edit', $item->id)}}">
-                                                        <i data-feather="edit-2" class="mr-50"></i>
-                                                        <span>Edit</span>
-                                                    </a>
-                                                    <a class="dropdown-item" data-toggle="modal" href="#deleteModalTransaction-{{$item->id}}">
-                                                        <i data-feather="trash" class="mr-50"></i>
-                                                        <span>Delete</span>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </td>
+                                        <td>{{$item->User->name}}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

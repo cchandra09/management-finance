@@ -10,10 +10,9 @@
     <div class="shadow-bottom"></div>
     <div class="main-menu-content">
         <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
-            <li class=" nav-item"><a class="d-flex align-items-center" href="{{route('employee.dashboard')}}"><i data-feather="home"></i><span class="menu-title text-truncate" data-i18n="Dashboard">Dashboard</span></a>
-            <li class=" nav-item"><a class="d-flex align-items-center" href="{{ route('employee.transaction') }}"><i data-feather='file-text'></i><span class="menu-title text-truncate" data-i18n="Dashboard">Transaction</span></a>
-            <li class=" nav-item"><a class="d-flex align-items-center" href="{{ route('employee.report') }}"><i data-feather='file-text'></i><span class="menu-title text-truncate" data-i18n="Dashboard">Report</span></a>
-            <li class=" nav-item"><a class="d-flex align-items-center" href="{{route('employee.profile')}}"><i data-feather='user'></i><span class="menu-title text-truncate" data-i18n="Dashboard">Profile</span></a>
+            <li class=" nav-item"><a class="d-flex align-items-center" href="{{route('admin.dashboard')}}"><i data-feather="home"></i><span class="menu-title text-truncate" data-i18n="Dashboard">Dashboard</span></a>
+            <li class=" nav-item"><a class="d-flex align-items-center" href="{{ route('admin.users') }}"><i data-feather='users'></i><span class="menu-title text-truncate" data-i18n="Dashboard">Users</span></a>
+            <li class=" nav-item"><a class="d-flex align-items-center" href="{{ route('admin.users.codeAngkringan') }}"><i data-feather='file-text'></i><span class="menu-title text-truncate" data-i18n="Dashboard">Kode Angkringan</span></a>
         </ul>
     </div>
 </div>

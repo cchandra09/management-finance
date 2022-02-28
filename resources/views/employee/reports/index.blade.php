@@ -67,7 +67,7 @@ HIPHOP - REPORT
                                <td class="text-left">Transaksi</td>
                                <td class="text-right">Pemasukan</td>
                                <td class="text-right">Pengeluaran</td>
-                               <td class="text-right">Selisih</td>
+                               <td class="text-right">Pendapatan</td>
                            </tr>
                             @php $chartData = []; @endphp
                             @foreach(getMonthsName() as $monthNumber => $monthName)

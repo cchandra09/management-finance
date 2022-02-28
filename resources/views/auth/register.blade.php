@@ -45,6 +45,7 @@
 
 <body class="vertical-layout vertical-menu-modern blank-page navbar-floating footer-static  " data-open="click" data-menu="vertical-menu-modern" data-col="blank-page">
     <!-- BEGIN: Content-->
+    @include('sweetalert::alert')
     <div class="app-content content ">
         <div class="content-overlay"></div>
         <div class="header-navbar-shadow"></div>
@@ -92,7 +93,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="register-code" class="form-label">Kode Angkringan</label>
-                                        <input type="text" class="form-control" id="register-code" name="code" placeholder="hiphop00121" aria-describedby="register-code" tabindex="2" />
+                                        <input type="text" class="form-control" id="register-code" name="code_angkringan" placeholder="hiphop00121" aria-describedby="register-code" tabindex="2" />
                                     </div>
                                     <button class="btn btn-primary btn-block" tabindex="5">Sign up</button>
                                 </form>

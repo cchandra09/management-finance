@@ -23,6 +23,9 @@ class EmployeeController extends Controller
    {
 
       $user = $request->user();
+      if($user->role_id == 1){
+        return redirect()->route('admin.dashboard');
+      }
       $transactionIn = Transaction::where('user_id', $request->user()->id)
                                  ->where('status', '1')
                                  ->select(DB::raw('coalesce(SUM(amount), 0) as total_transaction_in'))
@@ -32,7 +35,11 @@ class EmployeeController extends Controller
                                  ->select(DB::raw('coalesce(SUM(amount), 0) as total_transaction_out'))
                                  ->first()->total_transaction_out;
       $transaction = Transaction::where('user_id', $user->id)->get();
-      $percentage = $transactionIn / $transactionOut * 100;
+      if($transactionIn == 0){
+        $percentage = 0;
+      }else{
+        $percentage = $transactionIn / $transactionOut * 100;
+      }
       $differenceTransaction = $transactionIn - $transactionOut;
       return view('employee.index', compact(['transaction', 'transactionIn', 'transactionOut', 'percentage', 'differenceTransaction']));
    }
@@ -40,18 +47,24 @@ class EmployeeController extends Controller
    public function indexTransaction(Request $request)
    {
         $user = $request->user();
-        $year = !empty($request->year) ? $request->year : 2022;
+        $dateYear = Carbon::now()->format('Y');
+        $dateMonth = Carbon::now()->format('m');
+        $year = !empty($request->year) ? $request->year : $dateYear;
+        $month = !empty($request->month) ? $request->month : $dateMonth;
         $transaction = Transaction::where('user_id', $user->id)
                                     ->whereYear('date_transaction', '=', $year)
+                                    ->whereMonth('date_transaction', '=', $month)
                                     ->get();
         $transactionIn = Transaction::where('user_id', $request->user()->id)
                                  ->where('status', '1')
                                  ->whereYear('date_transaction', '=', $year)
+                                 ->whereMonth('date_transaction', '=', $month)
                                  ->select(DB::raw('coalesce(SUM(amount), 0) as total_transaction_in'))
                                  ->first()->total_transaction_in;
         $transactionOut = Transaction::where('user_id', $request->user()->id)
                                  ->where('status', '0')
                                  ->whereYear('date_transaction', '=', $year)
+                                 ->whereMonth('date_transaction', '=', $month)
                                  ->select(DB::raw('coalesce(SUM(amount), 0) as total_transaction_out'))
                                  ->first()->total_transaction_out;
         $differenceTransaction = $transactionIn - $transactionOut;
@@ -260,8 +273,8 @@ class EmployeeController extends Controller
     {
         $year = !empty($request->year) ? $request->year : 2022;
         $data = $this->getYearlyTransactionSummary($year, auth()->id());
-
+        $name = "Laporant-transaction-".$year.".pdf";
     	$pdf = PDF::loadview('employee.reports.pdf',['data'=>$data]);
-    	return $pdf->download('laporan-transaction-pdf.pdf');
+    	return $pdf->download($name);
     }
 }

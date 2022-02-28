@@ -31,3 +31,10 @@ Route::delete('/employee/transaction/delete/{id}', [App\Http\Controllers\Employe
 
 Route::get('/employee/report', [App\Http\Controllers\EmployeeController::class, 'indexReport'])->name('employee.report');
 Route::get('/employee/report/print', [App\Http\Controllers\EmployeeController::class, 'printReport'])->name('employee.report.print');
+
+Route::get('/admin/home', [App\Http\Controllers\AdminController::class, 'index'])->name('admin.dashboard');
+Route::get('/admin/users', [App\Http\Controllers\AdminController::class, 'getUsers'])->name('admin.users');
+Route::get('/admin/users/detail/{id}', [App\Http\Controllers\AdminController::class, 'detailUsers'])->name('admin.users.detail');
+Route::get('/admin/code-angkringan', [App\Http\Controllers\AdminController::class, 'codeAngkringan'])->name('admin.users.codeAngkringan');
+Route::post('/admin/code-angkringan/store', [App\Http\Controllers\AdminController::class, 'codeStoreAngkringan'])->name('admin.users.codeStoreAngkringan');
+Route::put('/admin/code-angkringan/update/{id}', [App\Http\Controllers\AdminController::class, 'codeUpdateAngkringan'])->name('admin.users.codeUpdateAngkringan');

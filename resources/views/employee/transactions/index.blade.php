@@ -7,6 +7,48 @@ HIPHOP - TRANSACTION
 <div class="content-body">
     <section id="dashboard-analytics">
         <div class="row match-height">
+            <div class="col-lg-12">
+                <div class="card" style="padding: 25px;">
+                    <form action="{{route('employee.transaction')}}" method="get">
+                        <div class="row">
+                            <div class="col-md-3 col-12">
+                                <div class="form-group">
+                                    <select class="form-control" name="month" id="basicSelect">
+                                        <option value="01">Januari</option>
+                                        <option value="02">Febuari</option>
+                                        <option value="03">Maret</option>
+                                        <option value="04">April</option>
+                                        <option value="05">Mei</option>
+                                        <option value="06">Juni</option>
+                                        <option value="07">Juli</option>
+                                        <option value="08">Agustus</option>
+                                        <option value="09">September</option>
+                                        <option value="10">Oktober</option>
+                                        <option value="11">November</option>
+                                        <option value="12">Desember</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-12">
+                                <div class="form-group">
+                                    <select class="form-control" name="year" id="basicSelect">
+                                        @foreach(getYears() as $year)
+                                            <option value="{{$year}}">{{$year}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-12">
+                                <div class="form-group">
+                                    <button class="btn btn-primary btn-m">Lihat Laporan</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="row match-height">
             <div class="col-lg-4 col-sm-2 col-12">
                 <div class="card">
                     <div class="card-header flex-column align-items-start pb-0">
@@ -62,8 +104,8 @@ HIPHOP - TRANSACTION
                             <span>Add New</span>
                         </a>
                     </div>
-                    <div class="card-datatable">
-                        <table class="datatables-ajax table">
+                    <div class="table-responsive">
+                        <table class="table mb-0">
                             <thead>
                                 <tr>
                                     <th>Tanggal Transaksi</th>
@@ -75,6 +117,12 @@ HIPHOP - TRANSACTION
                                 </tr>
                             </thead>
                             <tbody>
+                                @if(count($transaction) < 1){
+                                    <tr>
+                                        <td colspan="6" class="text-center">Tidak Ada Data</td>
+                                    </tr>
+                                }
+                                @endif
                                 @foreach($transaction as $item)
                                     <tr>
                                         <td>{{$item->date_transaction}}</td>
@@ -92,10 +140,10 @@ HIPHOP - TRANSACTION
                                                         <i data-feather="edit-2" class="mr-50"></i>
                                                         <span>Edit</span>
                                                     </a>
-                                                    <a class="dropdown-item" data-toggle="modal" href="#deleteModalTransaction-{{$item->id}}">
+                                                    {{-- <a class="dropdown-item" data-toggle="modal" href="#deleteModalTransaction-{{$item->id}}">
                                                         <i data-feather="trash" class="mr-50"></i>
                                                         <span>Delete</span>
-                                                    </a>
+                                                    </a> --}}
                                                 </div>
                                             </div>
                                         </td>

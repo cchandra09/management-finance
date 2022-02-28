@@ -13,4 +13,8 @@ class Transaction extends Model
     {
         return $this->hasOne('App\Models\Category', 'id', 'category_id');
     }
+    public function User()
+    {
+        return $this->hasOne('App\Models\User', 'id', 'user_id');
+    }
 }

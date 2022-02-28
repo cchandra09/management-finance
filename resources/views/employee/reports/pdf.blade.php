@@ -10,14 +10,14 @@
 			font-size: 9pt;
 		}
 	</style>
- 
+    <h1>Laporan Tahunan</h1>
 	<table class="datatables-ajax table">
         <tr>
             <td class="text-left">Bulan</td>
             <td class="text-left">Transaksi</td>
             <td class="text-right">Pemasukan</td>
             <td class="text-right">Pengeluaran</td>
-            <td class="text-right">Selisih</td>
+            <td class="text-right">Pendapatan</td>
         </tr>
          @php $chartData = []; @endphp
          @foreach(getMonthsName() as $monthNumber => $monthName)
