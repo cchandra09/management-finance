@@ -35,6 +35,18 @@ Route::get('/employee/report/print', [App\Http\Controllers\EmployeeController::c
 Route::get('/admin/home', [App\Http\Controllers\AdminController::class, 'index'])->name('admin.dashboard');
 Route::get('/admin/users', [App\Http\Controllers\AdminController::class, 'getUsers'])->name('admin.users');
 Route::get('/admin/users/detail/{id}', [App\Http\Controllers\AdminController::class, 'detailUsers'])->name('admin.users.detail');
+Route::delete('/admin/users/delete/{id}', [App\Http\Controllers\AdminController::class, 'deleteUser'])->name('admin.users.delete');
 Route::get('/admin/code-angkringan', [App\Http\Controllers\AdminController::class, 'codeAngkringan'])->name('admin.users.codeAngkringan');
 Route::post('/admin/code-angkringan/store', [App\Http\Controllers\AdminController::class, 'codeStoreAngkringan'])->name('admin.users.codeStoreAngkringan');
 Route::put('/admin/code-angkringan/update/{id}', [App\Http\Controllers\AdminController::class, 'codeUpdateAngkringan'])->name('admin.users.codeUpdateAngkringan');
+
+
+Route::get('/admin/menu', [App\Http\Controllers\AdminController::class, 'getMenu'])->name('admin.menu.index');
+Route::post('/admin/menu/store', [App\Http\Controllers\AdminController::class, 'storeMenu'])->name('admin.menu.store');
+Route::put('/admin/menu/update/{id}', [App\Http\Controllers\AdminController::class, 'updateMenu'])->name('admin.menu.update');
+Route::delete('/admin/menu/delete/{id}', [App\Http\Controllers\AdminController::class, 'deleteMenu'])->name('admin.menu.delete');
+
+
+Route::get('/employee/menu/{id}', [App\Http\Controllers\EmployeeController::class, 'getMenuId'])->name('employee.menu.detail');
+Route::post('/employee/cart/store', [App\Http\Controllers\EmployeeController::class, 'storeCart'])->name('employee.cart.store');
+Route::delete('/employee/cart/delete/{id}', [App\Http\Controllers\EmployeeController::class, 'deleteCart'])->name('employee.cart.delete');

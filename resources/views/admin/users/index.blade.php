@@ -28,11 +28,10 @@ HIPHOP - USERS
                                 </tr>
                             </thead>
                             <tbody>
-                                @if(count($user) < 1){
+                                @if(count($user) < 1)
                                     <tr>
                                         <td colspan="6" class="text-center">Tidak Ada Data</td>
                                     </tr>
-                                }
                                 @endif
                                 @foreach($user as $item)
                                     <tr>
@@ -50,6 +49,10 @@ HIPHOP - USERS
                                                         <i data-feather="eye" class="mr-50"></i>
                                                         <span>Detail</span>
                                                     </a>
+                                                    <a class="dropdown-item" data-toggle="modal" href="#deleteModal-{{$item->id}}">
+                                                        <i data-feather="trash" class="mr-50"></i>
+                                                        <span>Delete</span>
+                                                    </a>
                                                 </div>
                                             </div>
                                         </td>
@@ -62,6 +65,36 @@ HIPHOP - USERS
             </div>
         </div>
     </section>
+</div>
+<div class="animated">
+    @foreach ($user as $item)    
+        <div class="modal fade" id="deleteModal-{{$item->id}}" tabindex="-1" role="dialog" aria-labelledby="staticModalLabel"
+            data-backdrop="static" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticModalLabel">Hapus Data User</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Apakah Anda yakin ingin menghapus data ?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger" onclick="event.preventDefault();
+                        document.getElementById('deleteUser-{{$item->id}}').submit();">Confirm</button>
+                    <form action="{{route('admin.users.delete', $item->id)}}" style="display: none" id="deleteUser-{{$item->id}}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
 </div>
 @endsection
 @section('scripts')

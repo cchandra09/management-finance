@@ -91,18 +91,21 @@ HIPHOP - DASHBOARD
                                     <th>Nominal</th>
                                     <th>Status</th>
                                     <th>Deskripsi</th>
-                                    <th>Kategori</th>
                                     <th>User</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @if(count($transaction) < 1)
+                                    <tr>
+                                        <td colspan="6">Tidak Ada Data</td>
+                                    </tr>
+                                @endif
                                 @foreach($transaction as $item)
                                     <tr>
                                         <td>{{$item->date_transaction}}</td>
                                         <td>{{$item->amount}}</td>
                                         <td>@if($item->status == "1") <span class="badge badge-pill badge-light-success mr-1">Masuk</span> @else <span class="badge badge-pill badge-light-danger mr-1">Keluar</span> @endif</td>
                                         <td>{{$item->description}}</td>
-                                        <td>{{$item->Category->name}}</td>
                                         <td>{{$item->User->name}}</td>
                                     </tr>
                                 @endforeach

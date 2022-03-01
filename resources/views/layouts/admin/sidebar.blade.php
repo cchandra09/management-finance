@@ -12,6 +12,7 @@
         <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
             <li class=" nav-item"><a class="d-flex align-items-center" href="{{route('admin.dashboard')}}"><i data-feather="home"></i><span class="menu-title text-truncate" data-i18n="Dashboard">Dashboard</span></a>
             <li class=" nav-item"><a class="d-flex align-items-center" href="{{ route('admin.users') }}"><i data-feather='users'></i><span class="menu-title text-truncate" data-i18n="Dashboard">Users</span></a>
+                <li class=" nav-item"><a class="d-flex align-items-center" href="{{ route('admin.menu.index') }}"><i data-feather='file-text'></i><span class="menu-title text-truncate" data-i18n="Dashboard">Menu</span></a>
             <li class=" nav-item"><a class="d-flex align-items-center" href="{{ route('admin.users.codeAngkringan') }}"><i data-feather='file-text'></i><span class="menu-title text-truncate" data-i18n="Dashboard">Kode Angkringan</span></a>
         </ul>
     </div>

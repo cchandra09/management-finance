@@ -117,11 +117,10 @@ HIPHOP - TRANSACTION
                                 </tr>
                             </thead>
                             <tbody>
-                                @if(count($transaction) < 1){
+                                @if(count($transaction) < 1)
                                     <tr>
                                         <td colspan="6" class="text-center">Tidak Ada Data</td>
                                     </tr>
-                                }
                                 @endif
                                 @foreach($transaction as $item)
                                     <tr>
@@ -129,7 +128,6 @@ HIPHOP - TRANSACTION
                                         <td>{{$item->amount}}</td>
                                         <td>@if($item->status == "1") <span class="badge badge-pill badge-light-success mr-1">Masuk</span> @else <span class="badge badge-pill badge-light-danger mr-1">Keluar</span> @endif</td>
                                         <td>{{$item->description}}</td>
-                                        <td>{{$item->Category->name}}</td>
                                         <td>
                                             <div class="dropdown">
                                                 <button type="button" class="btn btn-sm dropdown-toggle hide-arrow" data-toggle="dropdown">

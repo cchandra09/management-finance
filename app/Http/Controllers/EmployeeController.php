@@ -12,6 +12,9 @@ use Alert;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use PDF;
+use App\Models\Menu;
+use App\Models\Cart;
+use App\Models\TransactionDetail;
 class EmployeeController extends Controller
 {
 
@@ -35,8 +38,8 @@ class EmployeeController extends Controller
                                  ->select(DB::raw('coalesce(SUM(amount), 0) as total_transaction_out'))
                                  ->first()->total_transaction_out;
       $transaction = Transaction::where('user_id', $user->id)->get();
-      if($transactionIn == 0){
-        $percentage = 0;
+      if($transactionOut == 0){
+        $percentage = 100;
       }else{
         $percentage = $transactionIn / $transactionOut * 100;
       }
@@ -47,6 +50,11 @@ class EmployeeController extends Controller
    public function indexTransaction(Request $request)
    {
         $user = $request->user();
+        if($user->role_id == 1){
+            return redirect()->route('admin.dashboard');
+        }
+        $user = $request->user();
+        $now = Carbon::now()->format('Y-m-d');
         $dateYear = Carbon::now()->format('Y');
         $dateMonth = Carbon::now()->format('m');
         $year = !empty($request->year) ? $request->year : $dateYear;
@@ -73,9 +81,14 @@ class EmployeeController extends Controller
 
    public function createTransaction(Request $request)
    {
-      $user = $request->user();
-      $categories = Category::all();
-      return view('employee.transactions.add', compact(['categories']));
+        $user = $request->user();
+        if($user->role_id == 1){
+            return redirect()->route('admin.dashboard');
+        }
+        $carts = Cart::where('user_id', $user->id)->get();
+        $subTotal = Cart::where('user_id', $user->id)->select(DB::raw('coalesce(SUM(total), 0) as total'))->first();
+        $menus = Menu::all();
+        return view('employee.transactions.add', compact(['menus','carts','subTotal']));
    }
 
    public function storeTransaction(Request $request)
@@ -83,21 +96,37 @@ class EmployeeController extends Controller
       DB::beginTransaction();
       try{
          
-         $user = $request->user();
-
+        $user = $request->user();
+        if($user->role_id == 1){
+            return redirect()->route('admin.dashboard');
+        }
+        $carts = Cart::where('user_id', $user->id)->get();
+        if(count($carts) < 1){
+            Alert::error('Error', 'Mohon Untuk Inputkan Cart');
+            return redirect()->back();
+        }
          $storeTransaction = new Transaction();
          $storeTransaction->date_transaction = $request->date_transaction;
          $storeTransaction->amount = $request->amount;
          $storeTransaction->status = $request->status;
          $storeTransaction->description = $request->description;
-         $storeTransaction->category_id = $request->category_id;
          $storeTransaction->user_id = $user->id;
          $storeTransaction->save();
+         $storeTransaction->fresh();
+
          
+         foreach($carts as $cart){
+             $detailTransaction = new TransactionDetail();
+             $detailTransaction->transaction_id = $storeTransaction->id;
+             $detailTransaction->name = $cart->name;
+             $detailTransaction->price = $cart->price;
+             $detailTransaction->qty = $cart->qty;
+             $detailTransaction->total = $cart->total;
+             $detailTransaction->save();
+         }
+         Cart::where('user_id', $user->id)->delete();
          DB::commit();
          return redirect('/employee/transactions');
-
-         return "Hello";
       }catch(\Exception $e){
          DB::rollback();
          return $e->getMessage();
@@ -107,7 +136,10 @@ class EmployeeController extends Controller
 
    public function editTransaction(Request $request, $id)
    {
-      $user = $request->user();
+        $user = $request->user();
+        if($user->role_id == 1){
+            return redirect()->route('admin.dashboard');
+        }
       $categories = Category::all();
       $transaction = Transaction::where('id', $id)->first();
       return view('employee.transactions.edit', compact(['transaction', 'categories']));
@@ -118,7 +150,10 @@ class EmployeeController extends Controller
       DB::beginTransaction();
       try{
          
-         $user = $request->user();
+        $user = $request->user();
+        if($user->role_id == 1){
+            return redirect()->route('admin.dashboard');
+        }
 
          $storeTransaction = Transaction::findOrFail($id);
          $storeTransaction->date_transaction = $request->date_transaction;
@@ -144,6 +179,10 @@ class EmployeeController extends Controller
    {
        DB::beginTransaction();
        try{
+            $user = $request->user();
+            if($user->role_id == 1){
+                return redirect()->route('admin.dashboard');
+            }
            $check = Transaction::where('id', $id)->first();
            if(empty($check)){
                Alert::error('Error', 'Tidak Ada Data!!');
@@ -276,5 +315,42 @@ class EmployeeController extends Controller
         $name = "Laporant-transaction-".$year.".pdf";
     	$pdf = PDF::loadview('employee.reports.pdf',['data'=>$data]);
     	return $pdf->download($name);
+    }
+
+    public function getMenuId(Request $request, $id)
+    {
+
+        $menu = Menu::where('id', $id)->first();
+        echo json_encode($menu);
+
+        exit;
+    }
+
+    public function storeCart(Request $request)
+    {
+        DB::beginTransaction();
+        try{
+            $user = $request->user();
+            $total = $request->qty * $request->price;
+            $cart = new Cart();
+            $cart->name = $request->name;
+            $cart->price = $request->price;
+            $cart->qty = $request->qty;
+            $cart->total = $total;
+            $cart->user_id = $user->id;
+            $cart->save();
+            DB::commit();
+            return redirect()->back();
+        }catch(\Exception $e){
+            DB::rollback();
+            Alert::error('error', $e->getMessage);
+            return redirect()->back();
+        }
+
+    }
+    public function deleteCart($id){
+        $cart = Cart::findOrFail($id);
+        $cart->delete();
+        return redirect()->back();
     }
 }

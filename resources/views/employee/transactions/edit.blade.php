@@ -14,6 +14,7 @@ HIPHOP - EDIT TRANSAKSI
                     </div>
                     <div class="card-body">
                         <form class="form" action="{{route('employee.transaction.update', $transaction->id)}}" method="POST">
+                            
                             <div class="row">
                                 @csrf
                                 @method('PUT')
@@ -72,6 +73,7 @@ HIPHOP - EDIT TRANSAKSI
         </div>
     </section>
 </div>
+
 @endsection
 @section('scripts')
 

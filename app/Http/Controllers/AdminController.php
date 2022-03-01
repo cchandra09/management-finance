@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use PDF;
 use App\Models\Code;
+use App\Models\Menu;
+use App\Models\TransactionDetail;
 class AdminController extends Controller
 {
     public function __construct()
@@ -27,26 +29,39 @@ class AdminController extends Controller
         if($user->role_id == 3){
             return redirect()->route('employee.dashboard');
         }
-       $transactionIn = Transaction::where('status', '1')
-                                  ->select(DB::raw('coalesce(SUM(amount), 0) as total_transaction_in'))
-                                  ->first()->total_transaction_in;
-       $transactionOut = Transaction::where('status', '0')
-                                  ->select(DB::raw('coalesce(SUM(amount), 0) as total_transaction_out'))
-                                  ->first()->total_transaction_out;
-       $transaction = Transaction::all();
-       $percentage = $transactionIn / $transactionOut * 100;
-       $differenceTransaction = $transactionIn - $transactionOut;
-       return view('admin.index', compact(['transaction', 'transactionIn', 'transactionOut', 'percentage', 'differenceTransaction']));
+        $transactionIn = Transaction::where('status', '1')
+                                    ->select(DB::raw('coalesce(SUM(amount), 0) as total_transaction_in'))
+                                    ->first()->total_transaction_in;
+        $transactionOut = Transaction::where('status', '0')
+                                    ->select(DB::raw('coalesce(SUM(amount), 0) as total_transaction_out'))
+                                    ->first()->total_transaction_out;
+        $transaction = Transaction::all();
+        if($transactionOut == 0){
+            $percentage = 100;
+        }else{
+            $percentage = $transactionIn / $transactionOut * 100;
+        }
+        $differenceTransaction = $transactionIn - $transactionOut;
+        return view('admin.index', compact(['transaction', 'transactionIn', 'transactionOut', 'percentage', 'differenceTransaction']));
     }
 
     public function getUsers(Request $request){
 
+        $user = $request->user();
+        if($user->role_id == 3){
+            return redirect()->route('employee.dashboard');
+        }
         $user = User::where('role_id', 3)->get();
         return view('admin.users.index', compact(['user']));
     }
 
     public function detailUsers(Request $request, $id)
     {
+        
+        $user = $request->user();
+        if($user->role_id == 3){
+            return redirect()->route('employee.dashboard');
+        }
         $dateYear = Carbon::now()->format('Y');
         $dateMonth = Carbon::now()->format('m');
         $year = !empty($request->year) ? $request->year : $dateYear;
@@ -89,6 +104,10 @@ class AdminController extends Controller
      public function codeAngkringan(Request $request)
      {
 
+        $user = $request->user();
+        if($user->role_id == 3){
+            return redirect()->route('employee.dashboard');
+        }
         $code = Code::all();
 
         return view('admin.code.index', compact(['code']));
@@ -97,6 +116,10 @@ class AdminController extends Controller
      public function codeStoreAngkringan(Request $request)
      {
 
+        $user = $request->user();
+        if($user->role_id == 3){
+            return redirect()->route('employee.dashboard');
+        }
         $code = new Code();
         $code->code_angkringan = $request->code_angkringan;
         $code->save();
@@ -108,10 +131,97 @@ class AdminController extends Controller
      function codeUpdateAngkringan(Request $request, $id)
      {
 
+        $user = $request->user();
+        if($user->role_id == 3){
+            return redirect()->route('employee.dashboard');
+        }
         $code = Code::findOrFail($id);
         $code->code_angkringan = $request->code_angkringan;
         $code->save();
         return redirect()->back();
+     }
+
+     public function getMenu(Request $request)
+     {
+
+        $menus = Menu::all();
+
+        return view('admin.menu.index', compact(['menus']));
+
+     }
+
+     public function storeMenu(Request $request)
+     {
+         DB::beginTransaction();
+         try{
+
+            $menu = new Menu();
+            $menu->name = $request->name;
+            $menu->price = $request->price;
+            $menu->stock = $request->stock;
+            $menu->save();
+            DB::commit();
+            return redirect()->route('admin.menu.index');
+
+         }catch(\Exception $e){
+             DB::rollback();
+         }
+     }
+
+     public function updateMenu(Request $request, $id)
+     {
+        DB::beginTransaction();
+        try{
+
+           $menu = Menu::findOrFail($id);
+           $menu->name = $request->name;
+           $menu->price = $request->price;
+           $menu->stock = $request->stock;
+           $menu->save();
+           DB::commit();
+           return redirect()->route('admin.menu.index');
+
+        }catch(\Exception $e){
+            DB::rollback();
+        }
+     }
+     public function deleteMenu(Request $request, $id)
+     {
+        DB::beginTransaction();
+        try{
+            $transaction = Transaction::where('menu_id', $id)->get();
+            if(count($transaction) > 1){
+                Alert::error('error', 'Tidak bisa delete data');
+                return redirect()->back();
+            }
+           $menu = Menu::findOrFail($id);
+           $menu->delete();
+           DB::commit();
+           return redirect()->route('admin.menu.index');
+
+        }catch(\Exception $e){
+            DB::rollback();
+        }
+     }
+
+     public function deleteUser(Request $request, $id)
+     {
+         DB::beginTransaction();
+         try{
+
+            $transactions = Transaction::where('user_id', $id)->get();
+            foreach($transactions as $item){
+                TransactionDetail::where('transaction_id')->delete();
+            }
+
+            $transactions = Transaction::where('user_id', $id)->delete();
+            User::where('id', $id)->delete();
+            DB::commit();
+            return redirect()->back();
+
+         }catch(\Exception $e){
+             DB::rollback();
+         }
      }
  
 }
