@@ -41,6 +41,10 @@ HIPHOP - USERS
                                                     <i data-feather="more-vertical"></i>
                                                 </button>
                                                 <div class="dropdown-menu">
+                                                    <a class="dropdown-item" href="{{route('admin.users.codeDetailAngkringan', $item->code_angkringan)}}">
+                                                        <i data-feather="eye" class="mr-50"></i>
+                                                        <span>Detail</span>
+                                                    </a>
                                                     <a class="dropdown-item" data-toggle="modal" data-target="#updateModal-{{$item->id}}">
                                                         <i data-feather="edit-2" class="mr-50"></i>
                                                         <span>Edit</span>

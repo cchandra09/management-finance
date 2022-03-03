@@ -44,8 +44,6 @@
 <script src="{{ asset('app-assets/js/scripts/forms/form-file-uploader.js') }}"></script>
 
 <script src="{{ asset('app-assets/vendors/js/charts/apexcharts.min.js') }}"></script>
-<script src="{{ asset('app-assets/js/scripts/pages/app-user-edit.js') }}"></script>
-<script src="{{ asset('app-assets/js/scripts/components/components-navs.js') }}"></script>
 {{-- <script src="{{ asset('app-assets/js/scripts/pages/dashboard-ecommerce.js') }}"></script> --}}
 
 <script>

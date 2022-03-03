@@ -34,11 +34,15 @@ Route::get('/employee/report/print', [App\Http\Controllers\EmployeeController::c
 
 Route::get('/admin/home', [App\Http\Controllers\AdminController::class, 'index'])->name('admin.dashboard');
 Route::get('/admin/users', [App\Http\Controllers\AdminController::class, 'getUsers'])->name('admin.users');
+Route::post('/admin/users/store', [App\Http\Controllers\AdminController::class, 'createUserManagement'])->name('admin.users.store');
 Route::get('/admin/users/detail/{id}', [App\Http\Controllers\AdminController::class, 'detailUsers'])->name('admin.users.detail');
 Route::delete('/admin/users/delete/{id}', [App\Http\Controllers\AdminController::class, 'deleteUser'])->name('admin.users.delete');
 Route::get('/admin/code-angkringan', [App\Http\Controllers\AdminController::class, 'codeAngkringan'])->name('admin.users.codeAngkringan');
 Route::post('/admin/code-angkringan/store', [App\Http\Controllers\AdminController::class, 'codeStoreAngkringan'])->name('admin.users.codeStoreAngkringan');
 Route::put('/admin/code-angkringan/update/{id}', [App\Http\Controllers\AdminController::class, 'codeUpdateAngkringan'])->name('admin.users.codeUpdateAngkringan');
+Route::get('/admin/code-angkringan/detail/{code_angkringan}', [App\Http\Controllers\AdminController::class, 'detailAngkringan'])->name('admin.users.codeDetailAngkringan');
+
+Route::get('/admin/user/print-transaction/{user_id}', [App\Http\Controllers\AdminController::class, 'printReportTransactionUser'])->name('admin.user.printTransaction');
 
 
 Route::get('/admin/menu', [App\Http\Controllers\AdminController::class, 'getMenu'])->name('admin.menu.index');
@@ -50,3 +54,13 @@ Route::delete('/admin/menu/delete/{id}', [App\Http\Controllers\AdminController::
 Route::get('/employee/menu/{id}', [App\Http\Controllers\EmployeeController::class, 'getMenuId'])->name('employee.menu.detail');
 Route::post('/employee/cart/store', [App\Http\Controllers\EmployeeController::class, 'storeCart'])->name('employee.cart.store');
 Route::delete('/employee/cart/delete/{id}', [App\Http\Controllers\EmployeeController::class, 'deleteCart'])->name('employee.cart.delete');
+
+Route::get('/management/home', [App\Http\Controllers\ManagementController::class, 'index'])->name('management.dashboard');
+Route::get('/management/employees', [App\Http\Controllers\ManagementController::class, 'indexEmployee'])->name('management.employees');
+Route::get('/management/users', [App\Http\Controllers\ManagementController::class, 'getUsers'])->name('management.users');
+Route::get('/management/users/detail/{id}', [App\Http\Controllers\ManagementController::class, 'detailUsers'])->name('management.users.detail');
+Route::get('/management/user/print-transaction/{user_id}', [App\Http\Controllers\ManagementController::class, 'printReportTransactionUser'])->name('management.user.printTransaction');
+
+Route::get('/management/profile', [App\Http\Controllers\ManagementController::class, 'indexProfile'])->name('management.profile');
+Route::post('/management/profile/update', [App\Http\Controllers\ManagementController::class, 'updateProfile'])->name('management.profile.update');
+Route::put('/management/profile/update-password', [App\Http\Controllers\ManagementController::class, 'updatePassword'])->name('management.profile.update.password');

@@ -28,6 +28,8 @@ class EmployeeController extends Controller
       $user = $request->user();
       if($user->role_id == 1){
         return redirect()->route('admin.dashboard');
+        }else if($user->role_id == 2){
+          return redirect()->route('management.dashboard');
       }
       $transactionIn = Transaction::where('user_id', $request->user()->id)
                                  ->where('status', '1')
@@ -217,18 +219,26 @@ class EmployeeController extends Controller
    {
        DB::beginTransaction();
        try{
+        if(!empty($request->image)){
 
-         $user = $request->user();
-         $user = User::findOrFail($user->id);
-         $user->name = $request->name;
-         $user->email = $request->email;
-         $user->gender = $request->gender;
-         $user->no_hp = $request->no_hp;
-         $user->save();
-         DB::commit();
-         Alert::success('Berhasil Update Profile!');
+            $imageName = time().'.'.$request->image->extension();  
+        
+                $request->image->move(public_path('images'), $imageName);
+            }
 
-         return redirect()->back();
+            $user = $request->user();
+            $user = User::findOrFail($user->id);
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->gender = $request->gender;
+            $user->no_hp = $request->no_hp;
+            $user->district = $request->district;
+            $user->photo_profile = !empty($request->image) ? $imageName : $user->photo_profile;
+            $user->save();
+            DB::commit();
+            Alert::success('Berhasil Update Profile!');
+
+            return redirect()->back();
 
        }catch(\Exception $e){
            DB::rollback();
@@ -249,6 +259,7 @@ class EmployeeController extends Controller
             if(!empty($request->new_password) && $request->confirmation_password == $request->new_password){
 
                 $user->password = Hash::make($request->new_password);
+                $user->user_password = $request->new_password;
                 $user->save();
                 DB::commit();
                 Alert::success('Success', 'Sukses Ganti Password!');

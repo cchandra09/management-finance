@@ -112,7 +112,6 @@ HIPHOP - TRANSACTION
                                     <th>Nominal</th>
                                     <th>Status</th>
                                     <th>Deskripsi</th>
-                                    <th>Kategori</th>
                                     <th>Option</th>
                                 </tr>
                             </thead>

@@ -1,4 +1,4 @@
-@extends('layouts.admin.app')
+@extends('layouts.management.app')
 @section('title')
 HIPHOP - DASHBOARD
 @endsection

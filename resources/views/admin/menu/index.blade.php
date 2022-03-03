@@ -119,7 +119,7 @@ HIPHOP - MENUS
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{route('admin.menu.update', $item->id)}}" method="post" id="updateMenu" class="form-horizontal">
+                    <form action="{{route('admin.menu.update', $item->id)}}" method="post" id="updateMenu-{{$item->id}}" class="form-horizontal">
                         @csrf
                         @method('PUT')
                         <div class="card-body">
@@ -138,7 +138,7 @@ HIPHOP - MENUS
                             </div>
 
                             <div class="col-sm-9">
-                                <button type="submit" class="btn btn-primary btn-md" onclick="event.preventDefault(); document.getElementById('updateMenu').submit();">Edit</button>
+                                <button type="submit" class="btn btn-primary btn-md" onclick="event.preventDefault(); document.getElementById('updateMenu-{{$item->id}}').submit();">Edit</button>
                                 <button type="submit" class="btn btn-default btn-md" data-dismiss="modal">Batal</button>
                             </div>
                         </div>

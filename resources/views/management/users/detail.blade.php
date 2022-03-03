@@ -1,4 +1,4 @@
-@extends('layouts.admin.app')
+@extends('layouts.management.app')
 @section('title')
 HIPHOP - REPORT
 @endsection
@@ -68,7 +68,7 @@ HIPHOP - REPORT
     </section>
     <section class="ajax-datatable">
         <div class="card" style="padding: 20px">
-            <form action="{{route('admin.users.detail', $id)}}" method="GET">
+            <form action="{{route('management.users.detail', $id)}}" method="GET">
                 <div class="row">
                     <div class="col-md-3 col-12">
                         <div class="form-group">
@@ -188,46 +188,10 @@ HIPHOP - REPORT
                                                 
                                             </div>
                                             <div class="card-hedaer">
-                                                {{-- <form action="{{route('admin.users.detail', $id)}}" method="get">
-                                                    <div class="row">
-                                                        <div class="col-md-4 col-12">
-                                                            <div class="form-group">
-                                                                <select class="form-control" name="month" id="basicSelect">
-                                                                    <option value="01">Januari</option>
-                                                                    <option value="02">Febuari</option>
-                                                                    <option value="03">Maret</option>
-                                                                    <option value="04">April</option>
-                                                                    <option value="05">Mei</option>
-                                                                    <option value="06">Juni</option>
-                                                                    <option value="07">Juli</option>
-                                                                    <option value="08">Agustus</option>
-                                                                    <option value="09">September</option>
-                                                                    <option value="10">Oktober</option>
-                                                                    <option value="11">November</option>
-                                                                    <option value="12">Desember</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-4 col-12">
-                                                            <div class="form-group">
-                                                                <select class="form-control" name="year" id="basicSelect">
-                                                                    @foreach(getYears() as $year)
-                                                                        <option value="{{$year}}">{{$year}}</option>
-                                                                    @endforeach
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-4 col-12">
-                                                            <div class="form-group">
-                                                                <button class="btn btn-primary btn-m">Lihat</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </form> --}}
                                                <div class="row mt-3 mb-3">
                                                    <div class="col-lg-6">
                                                        <h5>Filter Transaksi Per-Tanggal</h5>
-                                                        <form action="{{route('admin.users.detail', $id)}}" method="get">
+                                                        <form action="{{route('management.users.detail', $id)}}" method="get">
                                                             <div class="row">
                                                                 <div class="col-md-4 col-12">
                                                                     <div class="form-group">
@@ -255,7 +219,7 @@ HIPHOP - REPORT
                                                    </div>
                                                    <div class="col-lg-6">
                                                        <h5>Print Laporant Transaksi Per-Tanggal</h5>
-                                                        <form action="{{route('admin.user.printTransaction', $id)}}" method="get">
+                                                        <form action="{{route('management.user.printTransaction', $id)}}" method="get">
                                                             <div class="row">
                                                                 <div class="col-md-4 col-12">
                                                                     <div class="form-group">

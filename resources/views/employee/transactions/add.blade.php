@@ -13,48 +13,52 @@ HIPHOP - TAMBAH TRANSAKSI
                         <h4 class="card-title">Tambah Transaksi</h4>
                     </div>
                     <div class="card-body">
-                        <form class="form" action="{{route('employee.transaction.store')}}" method="POST">
-                            <a class="btn btn-primary btn-sm" data-toggle="modal" href="#cartModal">Tambah Cart</a>
-                            <div class="card-datatable">
-                                <table class="datatables-ajax table">
-                                    <thead>
+                        <a class="btn btn-primary btn-sm" data-toggle="modal" href="#cartModal">Tambah Cart</a>
+                        <div class="card-datatable">
+                            <table class="datatables-ajax table">
+                                <thead>
+                                    <tr>
+                                        <th>id</th>
+                                        <th>Menu</th>
+                                        <th>Price</th>
+                                        <th>qty</th>
+                                        <th>Total</th>
+                                        <th>Option</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if(count($carts) < 1)
                                         <tr>
-                                            <th>id</th>
-                                            <th>Menu</th>
-                                            <th>Price</th>
-                                            <th>qty</th>
-                                            <th>Total</th>
-                                            <th>Option</th>
+                                            <td colspan="6" class="text-center">Tidak Ada Data</td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if(count($carts) < 1)
-                                            <tr>
-                                                <td colspan="6" class="text-center">Tidak Ada Data</td>
-                                            </tr>
-                                        @endif
-                                        @php
-                                            $no = 1;
-                                        @endphp
-                                        @foreach($carts as $item)
-                                            <tr>
-                                                <td>{{$no++}}</td>
-                                                <td>{{$item->name}}</td>
-                                                <td>{{$item->price}}</td>
-                                                <td>{{$item->qty}}</td>
-                                                <td>{{$item->total}}</td>
-                                                <td>
-                                                    <button class="dropdown-item" onclick="event.preventDefault();
-                                                    document.getElementById('deleteMenu-{{$item->id}}').submit();">
-                                                        <i data-feather="trash" class="mr-50"></i>
-                                                        <span>Delete</span>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
+                                    @endif
+                                    @php
+                                        $no = 1;
+                                    @endphp
+                                    @foreach($carts as $item)
+                                        <tr>
+                                            <td>{{$no++}}</td>
+                                            <td>{{$item->name}}</td>
+                                            <td>{{$item->price}}</td>
+                                            <td>{{$item->qty}}</td>
+                                            <td>{{$item->total}}</td>
+                                            <td>
+                                                <button class="dropdown-item" onclick="event.preventDefault();
+                                                document.getElementById('deleteMenu-{{$item->id}}').submit();">
+                                                    <i data-feather="trash" class="mr-50"></i>
+                                                    <span>Delete</span>
+                                                </button>
+                                                <form action="{{route('employee.cart.delete', $item->id)}}" style="display: none" id="deleteMenu-{{$item->id}}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <form class="form" action="{{route('employee.transaction.store')}}" method="POST">
                             <div class="row">
                                 @csrf
                                 <div class="col-md-6 col-12">
@@ -148,10 +152,7 @@ HIPHOP - TAMBAH TRANSAKSI
     </div>
 </div>
 
-<form action="{{route('employee.cart.delete', $item->id)}}" style="display: none" id="deleteMenu-{{$item->id}}" method="POST">
-    @csrf
-    @method('DELETE')
-</form>
+
 @endsection
 @section('scripts')
       <script>

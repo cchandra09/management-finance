@@ -1,4 +1,4 @@
-@extends('layouts.employee.app')
+@extends('layouts.management.app')
 @section('title')
 HIPHOP - DASHBOARD
 @endsection
@@ -34,7 +34,7 @@ HIPHOP - DASHBOARD
                         <div class="tab-content">
                             <div role="tabpanel" class="tab-pane active" id="account-vertical-general" aria-labelledby="account-pill-general" aria-expanded="true">
                               
-                                <form class="validate-form mt-2" action="{{route('employee.profile.update')}}" method="POST" enctype="multipart/form-data">
+                                <form class="validate-form mt-2" action="{{route('management.profile.update')}}" method="POST" enctype="multipart/form-data">
                                     <img src="{{!empty($user->photo_profile) ? asset('images/'.$user->photo_profile) : 'https://cdn-icons-png.flaticon.com/512/1946/1946429.png'}}" alt="users avatar" class="user-avatar users-avatar-shadow rounded mr-2 my-25 cursor-pointer" height="90" width="90" />
                                     <div class="media-body mt-50 mb-2">
                                         <h4>{{$user->name}}</h4>
@@ -46,10 +46,6 @@ HIPHOP - DASHBOARD
                                                     <i class="mr-0" data-feather="edit"></i>
                                                 </span>
                                             </label>
-                                            {{-- <button class="btn btn-outline-secondary d-none d-sm-block">Remove</button>
-                                            <button class="btn btn-outline-secondary d-block d-sm-none">
-                                                <i class="mr-0" data-feather="trash-2"></i>
-                                            </button> --}}
                                         </div>
                                     </div>
                                     @csrf
@@ -103,13 +99,11 @@ HIPHOP - DASHBOARD
                                         </div>
                                     </div>
                                 </form>
-                                <!--/ form -->
-                            </div>
-                            <!--/ general tab -->
 
-                            <!-- change password -->
+                            </div>
+
                             <div class="tab-pane fade" id="account-vertical-password" role="tabpanel" aria-labelledby="account-pill-password" aria-expanded="false">
-                                <form class="validate-form" action="{{route('employee.profile.update.password')}}" method="post">
+                                <form class="validate-form" action="{{route('management.profile.update.password')}}" method="post">
                                     @csrf
                                     @method('PUT')
                                     <div class="row">
@@ -164,10 +158,8 @@ HIPHOP - DASHBOARD
                     </div>
                 </div>
             </div>
-            <!--/ right content section -->
         </div>
     </section>
-    <!-- / account setting page -->
 </div>
 @endsection
 @section('scripts')

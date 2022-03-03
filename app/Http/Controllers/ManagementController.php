@@ -15,7 +15,7 @@ use PDF;
 use App\Models\Code;
 use App\Models\Menu;
 use App\Models\TransactionDetail;
-class AdminController extends Controller
+class ManagementController extends Controller
 {
     public function __construct()
     {
@@ -42,7 +42,7 @@ class AdminController extends Controller
             $percentage = $transactionIn / $transactionOut * 100;
         }
         $differenceTransaction = $transactionIn - $transactionOut;
-        return view('admin.index', compact(['transaction', 'transactionIn', 'transactionOut', 'percentage', 'differenceTransaction']));
+        return view('management.index', compact(['transaction', 'transactionIn', 'transactionOut', 'percentage', 'differenceTransaction']));
     }
 
     public function getUsers(Request $request){
@@ -52,8 +52,7 @@ class AdminController extends Controller
             return redirect()->route('employee.dashboard');
         }
         $user = User::where('role_id', 3)->get();
-        $management = User::where('role_id', 2)->get();
-        return view('admin.users.index', compact(['user', 'management']));
+        return view('management.users.index', compact(['user']));
     }
 
     public function detailUsers(Request $request, $id)
@@ -81,7 +80,6 @@ class AdminController extends Controller
                                     ->get();
 
         $transactionIn = Transaction::where('status', '1')
-                                    ->where('user_id', $id)
                                     ->whereDate('date_transaction', $now)
                                     ->select(DB::raw('coalesce(SUM(amount), 0) as total_transaction_in'))
                                     ->when($month, function($query) use ($month, $year) {
@@ -94,7 +92,6 @@ class AdminController extends Controller
                                     })
                                     ->first()->total_transaction_in;
         $transactionOut = Transaction::where('status', '0')
-                                    ->where('user_id', $id)
                                     ->whereDate('date_transaction', $now)
                                     ->select(DB::raw('coalesce(SUM(amount), 0) as total_transaction_out'))
                                     ->when($month, function($query) use ($month, $year) {
@@ -108,164 +105,35 @@ class AdminController extends Controller
                                     ->first()->total_transaction_out;
         $differenceTransaction = $transactionIn - $transactionOut;
         $user = User::where('id', $id)->first();
-        return view('admin.users.detail', compact(['data', 'id', 'transaction', 'user', 'transactionIn', 'transactionOut', 'differenceTransaction']));
+        return view('management.users.detail', compact(['data', 'id', 'transaction', 'user', 'transactionIn', 'transactionOut', 'differenceTransaction']));
  
     }
- 
+
     private function getYearlyTransactionSummary($year, $userId)
-     {
-         $rawQuery = 'MONTH(date_transaction) as month';
-         $rawQuery .= ', count(`id`) as count';
-         $rawQuery .= ', sum(if(status = 1, amount, 0)) AS income';
-         $rawQuery .= ', sum(if(status = 0, amount, 0)) AS spending';
- 
-         $reportsData = DB::table('transactions')->select(DB::raw($rawQuery))
-             ->where(DB::raw('YEAR(date_transaction)'), $year)
-             ->where('user_id', $userId)
-             ->groupBy(DB::raw('YEAR(date_transaction)'))
-             ->groupBy(DB::raw('MONTH(date_transaction)'))
-             ->orderBy('date_transaction', 'asc')
-             ->get();
- 
-         $reports = [];
-         foreach ($reportsData as $report) {
-             $key = str_pad($report->month, 2, '0', STR_PAD_LEFT);
-             $reports[$key] = $report;
-             $reports[$key]->difference = $report->income - $report->spending;
-         }
- 
-         return collect($reports);
-     }
+    {
+        $rawQuery = 'MONTH(date_transaction) as month';
+        $rawQuery .= ', count(`id`) as count';
+        $rawQuery .= ', sum(if(status = 1, amount, 0)) AS income';
+        $rawQuery .= ', sum(if(status = 0, amount, 0)) AS spending';
 
-     public function codeAngkringan(Request $request)
-     {
+        $reportsData = DB::table('transactions')->select(DB::raw($rawQuery))
+            ->where(DB::raw('YEAR(date_transaction)'), $year)
+            ->where('user_id', $userId)
+            ->groupBy(DB::raw('YEAR(date_transaction)'))
+            ->groupBy(DB::raw('MONTH(date_transaction)'))
+            ->orderBy('date_transaction', 'asc')
+            ->get();
 
-        $user = $request->user();
-        if($user->role_id == 3){
-            return redirect()->route('employee.dashboard');
+        $reports = [];
+        foreach ($reportsData as $report) {
+            $key = str_pad($report->month, 2, '0', STR_PAD_LEFT);
+            $reports[$key] = $report;
+            $reports[$key]->difference = $report->income - $report->spending;
         }
-        $code = Code::all();
 
-        return view('admin.code.index', compact(['code']));
-     }
-     public function detailAngkringan(Request $request, $code_angkringan){
-         
-        $users = User::where('code_angkringan', $code_angkringan)->get();
-        return view('admin.code.detail', compact(['users', 'code_angkringan']));
-     }
-     public function codeStoreAngkringan(Request $request)
-     {
-
-        $user = $request->user();
-        if($user->role_id == 3){
-            return redirect()->route('employee.dashboard');
-        }
-        $code = new Code();
-        $code->code_angkringan = $request->code_angkringan;
-        $code->save();
-
-        return redirect()->back();
-
-     }
-
-     function codeUpdateAngkringan(Request $request, $id)
-     {
-
-        $user = $request->user();
-        if($user->role_id == 3){
-            return redirect()->route('employee.dashboard');
-        }
-        $code = Code::findOrFail($id);
-        $code->code_angkringan = $request->code_angkringan;
-        $code->save();
-        return redirect()->back();
-     }
-
-     public function getMenu(Request $request)
-     {
-
-        $menus = Menu::all();
-
-        return view('admin.menu.index', compact(['menus']));
-
-     }
-
-     public function storeMenu(Request $request)
-     {
-         DB::beginTransaction();
-         try{
-
-            $menu = new Menu();
-            $menu->name = $request->name;
-            $menu->price = $request->price;
-            $menu->stock = $request->stock;
-            $menu->save();
-            DB::commit();
-            return redirect()->route('admin.menu.index');
-
-         }catch(\Exception $e){
-             DB::rollback();
-         }
-     }
-
-     public function updateMenu(Request $request, $id)
-     {
-        DB::beginTransaction();
-        try{
-
-           $menu = Menu::findOrFail($id);
-           $menu->name = $request->name;
-           $menu->price = $request->price;
-           $menu->stock = $request->stock;
-           $menu->save();
-        //    Menu::where('id', $id)->update([
-        //     'name' => $request->name,
-        //     'price' => $request->price,
-        //     'stock' => $request->stock
-        //    ]);
-           DB::commit();
-           return redirect()->route('admin.menu.index');
-
-        }catch(\Exception $e){
-            DB::rollback();
-        }
-     }
-     public function deleteMenu(Request $request, $id)
-     {
-        DB::beginTransaction();
-        try{
-
-           $menu = Menu::findOrFail($id);
-           $menu->delete();
-           DB::commit();
-           return redirect()->route('admin.menu.index');
-
-        }catch(\Exception $e){
-            DB::rollback();
-        }
-     }
-
-     public function deleteUser(Request $request, $id)
-     {
-         DB::beginTransaction();
-         try{
-
-            $transactions = Transaction::where('user_id', $id)->get();
-            foreach($transactions as $item){
-                TransactionDetail::where('transaction_id')->delete();
-            }
-
-            $transactions = Transaction::where('user_id', $id)->delete();
-            User::where('id', $id)->delete();
-            DB::commit();
-            return redirect()->back();
-
-         }catch(\Exception $e){
-             DB::rollback();
-         }
+        return collect($reports);
     }
 
-    
     public function printReportTransactionUser(Request $request, $user_id)
     {
         $now = Carbon::now()->format('Y-m-d');
@@ -281,27 +149,85 @@ class AdminController extends Controller
     	return $pdf->download($name);
     }
 
-    public function createUserManagement(Request $request){
-
+    public function indexProfile(Request $request)
+    {
+ 
+       $user = User::where('id', $request->user()->id)->first();
+ 
+ 
+       return view('management.profile', compact(['user']));
+ 
+    }
+ 
+    public function updateProfile(Request $request)
+    {
         DB::beginTransaction();
         try{
-            User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'user_password' => $request->password,
-                'role_id' => 2,
-                'role_name' => 'Employee',
-                'code_angkringan' => '-'
-            ]);
-            DB::commit();
-            return redirect()->back();
+                if(!empty($request->image)){
 
+                    $imageName = time().'.'.$request->image->extension();  
+                
+                    $request->image->move(public_path('images'), $imageName);
+                }
+    
+                $user = $request->user();
+                $user = User::findOrFail($user->id);
+                $user->name = $request->name;
+                $user->email = $request->email;
+                $user->gender = $request->gender;
+                $user->no_hp = $request->no_hp;
+                $user->district = $request->district;
+                $user->photo_profile = !empty($request->image) ? $imageName : $user->photo_profile;
+                $user->save();
+                DB::commit();
+                Alert::success('Berhasil Update Profile!');
+    
+                return redirect()->back();
+ 
         }catch(\Exception $e){
             DB::rollback();
+            Alert::error('Error', $e->getMessage());
             return $e->getMessage();
         }
     }
-
  
+    public function updatePassword(Request $request)
+    {
+       DB::beginTransaction();
+       try{
+ 
+          $user = User::findOrFail(Auth::user()->id);
+          $hasher = app('hash');
+          if (!empty($request->old_password) &&$hasher->check($request->old_password, $user->password)) {
+     
+             if(!empty($request->new_password) && $request->confirmation_password == $request->new_password){
+ 
+                 $user->password = Hash::make($request->new_password);
+                 $user->user_password = $request->new_password;
+                 $user->save();
+                 DB::commit();
+                 Alert::success('Success', 'Sukses Ganti Password!');
+                 return back();
+ 
+             }else{
+                 Alert::error('Error', 'new'.$request->confirmation_password. '-'. $request->new_password);
+                 return back();
+             }
+ 
+         }else{
+             Alert::error('Error', 'Password lama yang anda masukan salah!');
+             return back();
+         }
+         DB::commit();
+         Alert::success('Berhasil Update Profile!');
+ 
+         return redirect()->back();
+ 
+       }catch(\Exception $e){
+           DB::rollback();
+           Alert::error('Error', $e->getMessage());
+           return $e->getMessage();
+       }
+    }
+
 }
