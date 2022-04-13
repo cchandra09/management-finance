@@ -25,28 +25,31 @@ class EmployeeController extends Controller
    public function index(Request $request)
    {
 
-      $user = $request->user();
-      if($user->role_id == 1){
-        return redirect()->route('admin.dashboard');
-        }else if($user->role_id == 2){
-          return redirect()->route('management.dashboard');
-      }
-      $transactionIn = Transaction::where('user_id', $request->user()->id)
-                                 ->where('status', '1')
-                                 ->select(DB::raw('coalesce(SUM(amount), 0) as total_transaction_in'))
-                                 ->first()->total_transaction_in;
-      $transactionOut = Transaction::where('user_id', $request->user()->id)
-                                 ->where('status', '0')
-                                 ->select(DB::raw('coalesce(SUM(amount), 0) as total_transaction_out'))
-                                 ->first()->total_transaction_out;
-      $transaction = Transaction::where('user_id', $user->id)->get();
-      if($transactionOut == 0){
-        $percentage = 100;
-      }else{
-        $percentage = $transactionIn / $transactionOut * 100;
-      }
-      $differenceTransaction = $transactionIn - $transactionOut;
-      return view('employee.index', compact(['transaction', 'transactionIn', 'transactionOut', 'percentage', 'differenceTransaction']));
+        $user = $request->user();
+        if($user->role_id == 1){
+            return redirect()->route('admin.dashboard');
+            }else if($user->role_id == 2){
+            return redirect()->route('management.dashboard');
+        }
+        $transactionPurcashePrice = Transaction::where('user_id', $request->user()->id)
+                                    ->where('status', '1')
+                                    ->join('transaction_details as td', 'td.transaction_id', '=', 'transactions.id')
+                                    ->select(DB::raw('coalesce(SUM(td.purcashe_price), 0) as total_transaction_in'))
+                                    ->first()->total_transaction_in;
+        $transactionSalePrice = Transaction::where('user_id', $request->user()->id)
+                                    ->where('status', '1')
+                                    ->join('transaction_details as td', 'td.transaction_id', '=', 'transactions.id')
+                                    ->select(DB::raw('coalesce(SUM(td.price), 0) as total_transaction_out'))
+                                    ->first()->total_transaction_out;
+        $transaction = Transaction::join('transaction_details as td', 'td.transaction_id', '=', 'transactions.id')->where('user_id', $user->id)->get();
+        if($transactionSalePrice == 0){
+            $percentage = 100;
+        }else{
+            $percentage = $transactionPurcashePrice / $transactionSalePrice * 100;
+        }
+        $differenceTransaction = $transactionSalePrice - $transactionPurcashePrice;
+        $tranactionAssetFirst = ($differenceTransaction/100) * 5;
+        return view('employee.index', compact(['tranactionAssetFirst', 'transaction', 'transactionPurcashePrice', 'transactionSalePrice', 'percentage', 'differenceTransaction']));
    }
 
    public function indexTransaction(Request $request)
@@ -64,21 +67,40 @@ class EmployeeController extends Controller
         $transaction = Transaction::where('user_id', $user->id)
                                     ->whereYear('date_transaction', '=', $year)
                                     ->whereMonth('date_transaction', '=', $month)
+                                    ->join('transaction_details as td', 'td.transaction_id', '=', 'transactions.id')
                                     ->get();
-        $transactionIn = Transaction::where('user_id', $request->user()->id)
-                                 ->where('status', '1')
-                                 ->whereYear('date_transaction', '=', $year)
-                                 ->whereMonth('date_transaction', '=', $month)
-                                 ->select(DB::raw('coalesce(SUM(amount), 0) as total_transaction_in'))
-                                 ->first()->total_transaction_in;
-        $transactionOut = Transaction::where('user_id', $request->user()->id)
-                                 ->where('status', '0')
-                                 ->whereYear('date_transaction', '=', $year)
-                                 ->whereMonth('date_transaction', '=', $month)
-                                 ->select(DB::raw('coalesce(SUM(amount), 0) as total_transaction_out'))
-                                 ->first()->total_transaction_out;
-        $differenceTransaction = $transactionIn - $transactionOut;
-        return view('employee.transactions.index', compact(['transaction', 'transactionIn', 'transactionOut', 'differenceTransaction']));
+        // $transactionIn = Transaction::where('user_id', $request->user()->id)
+        //                          ->where('status', '1')
+        //                          ->whereYear('date_transaction', '=', $year)
+        //                          ->whereMonth('date_transaction', '=', $month)
+        //                          ->select(DB::raw('coalesce(SUM(amount), 0) as total_transaction_in'))
+        //                          ->first()->total_transaction_in;
+        // $transactionOut = Transaction::where('user_id', $request->user()->id)
+        //                          ->where('status', '0')
+        //                          ->whereYear('date_transaction', '=', $year)
+        //                          ->whereMonth('date_transaction', '=', $month)
+        //                          ->select(DB::raw('coalesce(SUM(amount), 0) as total_transaction_out'))
+        //                          ->first()->total_transaction_out;
+    // }
+        $transactionPurcashePrice = Transaction::where('user_id', $request->user()->id)
+                                    ->where('status', '1')
+                                    ->join('transaction_details as td', 'td.transaction_id', '=', 'transactions.id')
+                                    ->select(DB::raw('coalesce(SUM(td.purcashe_price), 0) as total_transaction_in'))
+                                    ->first()->total_transaction_in;
+        $transactionSalePrice = Transaction::where('user_id', $request->user()->id)
+                                ->where('status', '1')
+                                ->join('transaction_details as td', 'td.transaction_id', '=', 'transactions.id')
+                                ->select(DB::raw('coalesce(SUM(td.price), 0) as total_transaction_out'))
+                                ->first()->total_transaction_out;
+        // $differenceTransaction = $transactionIn - $transactionOut;
+        if($transactionSalePrice == 0){
+            $percentage = 100;
+        }else{
+            $percentage = $transactionPurcashePrice / $transactionSalePrice * 100;
+        }
+        $differenceTransaction = $transactionSalePrice - $transactionPurcashePrice;
+        $tranactionAssetFirst = ($differenceTransaction/100) * 5;
+        return view('employee.transactions.index', compact(['transaction', 'transactionPurcashePrice', 'transactionSalePrice', 'differenceTransaction', 'tranactionAssetFirst']));
    }
 
    public function createTransaction(Request $request)
@@ -110,6 +132,7 @@ class EmployeeController extends Controller
          $storeTransaction = new Transaction();
          $storeTransaction->date_transaction = $request->date_transaction;
          $storeTransaction->amount = $request->amount;
+         $storeTransaction->total_purcashe_price = $request->total_purcashe_price;
          $storeTransaction->status = $request->status;
          $storeTransaction->description = $request->description;
          $storeTransaction->user_id = $user->id;
@@ -122,8 +145,10 @@ class EmployeeController extends Controller
              $detailTransaction->transaction_id = $storeTransaction->id;
              $detailTransaction->name = $cart->name;
              $detailTransaction->price = $cart->price;
+             $detailTransaction->purcashe_price = $cart->purcashe_price;
              $detailTransaction->qty = $cart->qty;
              $detailTransaction->total = $cart->total;
+             $detailTransaction->category = $cart->category;
              $detailTransaction->save();
          }
          Cart::where('user_id', $user->id)->delete();
@@ -177,7 +202,7 @@ class EmployeeController extends Controller
 
    }
 
-   public function deleteTransaction($id)
+   public function deleteTransaction(Request $request, $id)
    {
        DB::beginTransaction();
        try{
@@ -346,15 +371,17 @@ class EmployeeController extends Controller
             $cart = new Cart();
             $cart->name = $request->name;
             $cart->price = $request->price;
+            $cart->purcashe_price = $request->purcashe_price;
             $cart->qty = $request->qty;
             $cart->total = $total;
             $cart->user_id = $user->id;
+            $cart->category = $request->category;
             $cart->save();
             DB::commit();
             return redirect()->back();
         }catch(\Exception $e){
             DB::rollback();
-            Alert::error('error', $e->getMessage);
+            Alert::error('error', $e->getMessage());
             return redirect()->back();
         }
 

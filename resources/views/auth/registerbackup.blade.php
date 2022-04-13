@@ -1,132 +1,137 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html class="loading" lang="en" data-textdirection="ltr">
+<!-- BEGIN: Head-->
+
 <head>
-    <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-    <title>Daftar Akun &mdash; UANGKU</title>
-    <link rel="shortcut icon" href="{{ asset('assets/img/logo.png') }}">
-    <!-- General CSS Files -->
-    <link rel="stylesheet" href="{{ asset('assets/modules/bootstrap/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/modules/fontawesome/css/all.min.css') }}">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0,minimal-ui">
+    <meta name="description" content="Vuexy admin is super flexible, powerful, clean &amp; modern responsive bootstrap 4 admin template with unlimited possibilities.">
+    <meta name="keywords" content="admin template, Vuexy admin template, dashboard template, flat admin template, responsive admin template, web app">
+    <meta name="author" content="PIXINVENT">
+    <title>Register HipHop</title>
+    <link rel="apple-touch-icon" href="../../../app-assets/images/ico/apple-icon-120.png">
+    <link rel="shortcut icon" type="image/x-icon" href="../../../app-assets/images/ico/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500;1,600" rel="stylesheet">
 
-    <!-- CSS Libraries -->
-    <link rel="stylesheet" href="{{ asset('assets/modules/bootstrap-social/bootstrap-social.css') }}">
+    <!-- BEGIN: Vendor CSS-->
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/vendors.min.css">
+    <!-- END: Vendor CSS-->
 
-    <!-- Template CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/components.css') }}">
+    <!-- BEGIN: Theme CSS-->
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/bootstrap-extended.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/colors.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/components.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/themes/dark-layout.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/themes/bordered-layout.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/themes/semi-dark-layout.css">
+
+    <!-- BEGIN: Page CSS-->
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/core/menu/menu-types/vertical-menu.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/plugins/forms/form-validation.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/pages/page-auth.css">
+    <!-- END: Page CSS-->
+
+    <!-- BEGIN: Custom CSS-->
+    <link rel="stylesheet" type="text/css" href="../../../assets/css/style.css">
+    <!-- END: Custom CSS-->
+
 </head>
+<!-- END: Head-->
 
-<body style="background: #f3f3f3">
-<div id="app">
-    <section class="section">
-        <div class="container mt-5">
-            <div class="row">
-                <div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 col-lg-8 offset-lg-2 col-xl-8 offset-xl-2">
-                    <div class="login-brand">
-                        <img src="{{ asset('assets/img/jewelry.svg') }}" alt="logo" width="100" class="shadow-light rounded-circle">
-                    </div>
+<!-- BEGIN: Body-->
 
-                    <div class="card card-primary">
-                        <div class="card-header"><h4>DAFTAR AKUN</h4></div>
+<body class="vertical-layout vertical-menu-modern blank-page navbar-floating footer-static  " data-open="click" data-menu="vertical-menu-modern" data-col="blank-page">
+    <!-- BEGIN: Content-->
+    @include('sweetalert::alert')
+    <div class="app-content content ">
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+            </div>
+            <div class="content-body">
+                <div class="auth-wrapper auth-v1 px-2">
+                    <div class="auth-inner py-2">
+                        <!-- Register v1 -->
+                        <div class="card mb-0">
+                            <div class="card-body">
+                                <a href="javascript:void(0);" class="brand-logo">
+                                    <h2 class="brand-text text-primary ml-1">HipHop</h2>
+                                </a>
 
-                        <div class="card-body">
-                            <form action="{{ route('register') }}" method="POST">
-                                @csrf
-                                <div class="row">
-                                    <div class="form-group col-6">
-                                        <label for="frist_name">Nama Lengkap</label>
-                                        <input id="frist_name" type="text" class="form-control" name="full_name" value="{{ old('full_name') }}" autofocus>
-                                        @error('full_name')
+                                <h4 class="card-title mb-1">Daftar Sekarang 🚀</h4>
+                                <p class="card-text mb-2">Management Keuangan</p>
+
+                                <form class="auth-register-form mt-2" action="{{ route('register') }}" method="POST">
+                                    @csrf
+                                    <div class="form-group">
+                                        <label for="register-username" class="form-label">Name</label>
+                                        <input type="text" class="form-control" id="register-username" name="name" placeholder="johndoe" aria-describedby="register-username" tabindex="1" autofocus />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="register-email" class="form-label">Email</label>
+                                        <input type="text" class="form-control" id="register-email" name="email" placeholder="john@example.com" aria-describedby="register-email" value="{{ old('email') }}" tabindex="2" />
+                                        @error('email')
                                         <div class="invalid-feedback" style="display: block">
                                             {{ $message }}
                                         </div>
                                         @enderror
                                     </div>
-                                    <div class="form-group col-6">
-                                        <label for="last_name">Username</label>
-                                        <input id="last_name" type="text" class="form-control" name="username" value="{{ old('username') }}">
-                                        @error('username')
-                                        <div class="invalid-feedback" style="display: block">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-                                </div>
 
-                                <div class="form-group">
-                                    <label for="email">Alamat Email</label>
-                                    <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}">
-                                    @error('email')
-                                    <div class="invalid-feedback" style="display: block">
-                                        {{ $message }}
-                                    </div>
-                                    @enderror
+                                    <div class="form-group">
+                                        <label for="register-password" class="form-label">Password</label>
 
-                                <div class="row" style="margin-top: 30px">
-                                    <div class="form-group col-6">
-                                        <label for="password" class="d-block">Password</label>
-                                        <input id="password" type="password" class="form-control pwstrength" data-indicator="pwindicator" name="password">
-                                        <div id="pwindicator" class="pwindicator">
-                                            <div class="bar"></div>
-                                            <div class="label"></div>
+                                        <div class="input-group input-group-merge form-password-toggle">
+                                            <input type="password" class="form-control form-control-merge" id="register-password" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="register-password" tabindex="3" />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text cursor-pointer"><i data-feather="eye"></i></span>
+                                            </div>
                                         </div>
-                                        @error('password')
-                                        <div class="invalid-feedback" style="display: block">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
                                     </div>
-                                    <div class="form-group col-6">
-                                        <label for="password2" class="d-block">Konfirmasi Password</label>
-                                        <input id="password2" type="password" class="form-control" name="password_confirmation">
+                                    <div class="form-group">
+                                        <label for="register-code" class="form-label">Kode Angkringan</label>
+                                        <input type="text" class="form-control" id="register-code" name="code_angkringan" placeholder="hiphop00121" aria-describedby="register-code" tabindex="2" />
                                     </div>
-                                </div>
+                                    <button class="btn btn-primary btn-block" tabindex="5">Sign up</button>
+                                </form>
 
-                                <div class="form-group">
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" name="agree" class="custom-control-input" id="agree" @if(old('agree')) checked @endif>
-                                        <label class="custom-control-label" for="agree">Saya setuju dengan syarat dan ketentuan</label>
-                                        @error('agree')
-                                        <div class="invalid-feedback" style="display: block">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-primary btn-lg btn-block">
-                                        DAFTAR
-                                    </button>
-                                </div>
-                            </form>
+                                <p class="text-center mt-2">
+                                    <span>Already have an account?</span>
+                                    <a href="/">
+                                        <span>Sign in instead</span>
+                                    </a>
+                                </p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="simple-footer">
-                        © <strong>UANGKU</strong> 2019. Hak Cipta Dilindungi.
+
                     </div>
                 </div>
+
             </div>
         </div>
-    </section>
-</div>
+    </div>
 
-<!-- General JS Scripts -->
-<script src="{{ asset('assets/modules/jquery.min.js') }}"></script>
-<script src="{{ asset('assets/modules/popper.js') }}"></script>
-<script src="{{ asset('assets/modules/tooltip.js') }}"></script>
-<script src="{{ asset('assets/modules/bootstrap/js/bootstrap.min.js') }}"></script>
-<script src="{{ asset('assets/modules/nicescroll/jquery.nicescroll.min.js') }}"></script>
-<script src="{{ asset('assets/modules/moment.min.js') }}"></script>
-<script src="{{ asset('assets/js/stisla.js') }}"></script>
+    <script src="../../../app-assets/vendors/js/vendors.min.js"></script>
 
-<!-- JS Libraies -->
+    <script src="../../../app-assets/vendors/js/forms/validation/jquery.validate.min.js"></script>
 
-<!-- Page Specific JS File -->
+    <script src="../../../app-assets/js/core/app-menu.js"></script>
+    <script src="../../../app-assets/js/core/app.js"></script>
 
-<!-- Template JS File -->
-<script src="{{ asset('assets/js/scripts.js') }}"></script>
-<script src="{{ asset('assets/js/custom.js') }}"></script>
+    <script src="../../../app-assets/js/scripts/pages/page-auth-register.js"></script>
+    <script>
+        $(window).on('load', function() {
+            if (feather) {
+                feather.replace({
+                    width: 14,
+                    height: 14
+                });
+            }
+        })
+    </script>
 </body>
+
 </html>

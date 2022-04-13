@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'indexLogin']);
+Route::get('/register', [App\Http\Controllers\Auth\LoginController::class, 'register']);
 Route::get('/', [App\Http\Controllers\Auth\LoginController::class, 'indexLogin']);
 Route::post('/login/user', [App\Http\Controllers\Auth\LoginController::class, 'login'])->name('login.user');
 
@@ -34,13 +35,16 @@ Route::get('/employee/report/print', [App\Http\Controllers\EmployeeController::c
 
 Route::get('/admin/home', [App\Http\Controllers\AdminController::class, 'index'])->name('admin.dashboard');
 Route::get('/admin/users', [App\Http\Controllers\AdminController::class, 'getUsers'])->name('admin.users');
+Route::get('/admin/users/income', [App\Http\Controllers\AdminController::class, 'usersIncome'])->name('admin.income');
 Route::post('/admin/users/store', [App\Http\Controllers\AdminController::class, 'createUserManagement'])->name('admin.users.store');
+Route::post('/admin/users/frontOffice/store', [App\Http\Controllers\AdminController::class, 'storeFrontOffice'])->name('admin.users.frontOffice.store');
 Route::get('/admin/users/detail/{id}', [App\Http\Controllers\AdminController::class, 'detailUsers'])->name('admin.users.detail');
 Route::delete('/admin/users/delete/{id}', [App\Http\Controllers\AdminController::class, 'deleteUser'])->name('admin.users.delete');
 Route::get('/admin/code-angkringan', [App\Http\Controllers\AdminController::class, 'codeAngkringan'])->name('admin.users.codeAngkringan');
 Route::post('/admin/code-angkringan/store', [App\Http\Controllers\AdminController::class, 'codeStoreAngkringan'])->name('admin.users.codeStoreAngkringan');
 Route::put('/admin/code-angkringan/update/{id}', [App\Http\Controllers\AdminController::class, 'codeUpdateAngkringan'])->name('admin.users.codeUpdateAngkringan');
 Route::get('/admin/code-angkringan/detail/{code_angkringan}', [App\Http\Controllers\AdminController::class, 'detailAngkringan'])->name('admin.users.codeDetailAngkringan');
+Route::get('/admin/search-code', [App\Http\Controllers\AdminController::class, 'selectSearch'])->name('admin.code.search');
 
 Route::get('/admin/user/print-transaction/{user_id}', [App\Http\Controllers\AdminController::class, 'printReportTransactionUser'])->name('admin.user.printTransaction');
 

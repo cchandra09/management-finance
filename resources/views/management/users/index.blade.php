@@ -1,4 +1,4 @@
-@extends('layouts.admin.app')
+@extends('layouts.management.app')
 @section('title')
 HIPHOP - USERS
 @endsection
@@ -11,8 +11,8 @@ HIPHOP - USERS
                 <div class="card">
                     
                     <div class="card-body">
-                        <div class="card-datatable" style="padding: 15px; box-sizing: border-box">
-                            <table class="datatables-ajax table" id="all-management">
+                        <div class="table-responsive">
+                            <table class="table mb-0" id="all-management">
                                 <thead>
                                     <tr>
                                         <th>Name</th>

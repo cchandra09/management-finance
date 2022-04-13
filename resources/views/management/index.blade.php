@@ -59,14 +59,16 @@ HIPHOP - DASHBOARD
                         <h3>Total Transaksi : {{count($transaction)}}</h3>
                     </div>
                     
-                    <div class="card-datatable">
-                        <table class="datatables-ajax table">
+                    {{-- <div class="table-responsive"> --}}
+                        <table class="table table-responsive" id="datatables1">
                             <thead>
                                 <tr>
                                     <th>Tanggal Transaksi</th>
-                                    <th>Nominal</th>
                                     <th>Status</th>
-                                    <th>Deskripsi</th>
+                                    <th>Makanan</th>
+                                    <th>Qty</th>
+                                    <th>Harga</th>
+                                    <th>Total</th>
                                     <th>User</th>
                                 </tr>
                             </thead>
@@ -79,15 +81,17 @@ HIPHOP - DASHBOARD
                                 @foreach($transaction as $item)
                                     <tr>
                                         <td>{{$item->date_transaction}}</td>
-                                        <td>{{$item->amount}}</td>
                                         <td>@if($item->status == "1") <span class="badge badge-pill badge-light-success mr-1">Masuk</span> @else <span class="badge badge-pill badge-light-danger mr-1">Keluar</span> @endif</td>
-                                        <td>{{$item->description}}</td>
+                                        <td>{{$item->name}}</td>
+                                        <td>{{$item->qty}}</td>
+                                        <td>{{$item->price}}</td>
+                                        <td>{{$item->total}}</td>
                                         <td>{{$item->User->name}}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
-                    </div>
+                    {{-- </div> --}}
                 </div>
             </div>
         </div>

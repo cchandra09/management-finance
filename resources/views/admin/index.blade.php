@@ -13,8 +13,8 @@ HIPHOP - DASHBOARD
                             <i data-feather="dollar-sign" class="font-medium-5"></i>
                         </div>
                     </div>
-                    <h2 class="font-weight-bolder mt-1">Rp{{$transactionIn}}</h2>
-                    <p class="card-text">Transaksi Masuk</p>
+                    <h2 class="font-weight-bolder mt-1">Rp{{$transactionPurcashePrice}}</h2>
+                    <p class="card-text">Transaksi Masuk Harga Beli</p>
                 </div>
                 <div id="gained-chart"></div>
             </div>
@@ -27,13 +27,13 @@ HIPHOP - DASHBOARD
                             <i data-feather="dollar-sign" class="font-medium-5"></i>
                         </div>
                     </div>
-                    <h2 class="font-weight-bolder mt-1">Rp{{$transactionOut}}</h2>
-                    <p class="card-text">Transaksi Keluar</p>
+                    <h2 class="font-weight-bolder mt-1">Rp{{$transactionSalePrice}}</h2>
+                    <p class="card-text">Transaksi Masuk Penjualan</p>
                 </div>
                 <div id="order-chart"></div>
             </div>
         </div>
-        <div class="col-lg-3 col-sm-3 col-12">
+        <div class="col-lg-2 col-sm-2 col-12">
             <div class="card">
                 <div class="card-header flex-column align-items-start pb-0">
                     <div class="avatar bg-light-warning p-50 m-0">
@@ -43,6 +43,20 @@ HIPHOP - DASHBOARD
                     </div>
                     <h2 class="font-weight-bolder mt-1">Rp{{$differenceTransaction}}</h2>
                     <p class="card-text">Pendapatan</p>
+                </div>
+                <div id="order-chart"></div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-2 col-12">
+            <div class="card">
+                <div class="card-header flex-column align-items-start pb-0">
+                    <div class="avatar bg-light-warning p-50 m-0">
+                        <div class="avatar-content">
+                            <i data-feather="dollar-sign" class="font-medium-5"></i>
+                        </div>
+                    </div>
+                    <h2 class="font-weight-bolder mt-1">Rp{{$tranactionAssetFirst}}</h2>
+                    <p class="card-text">5% Pendapatan</p>
                 </div>
                 <div id="order-chart"></div>
             </div>
@@ -59,14 +73,16 @@ HIPHOP - DASHBOARD
                         <h3>Total Transaksi : {{count($transaction)}}</h3>
                     </div>
                     
-                    <div class="card-datatable">
-                        <table class="datatables-ajax table">
+                    {{-- <div class="content-body"> --}}
+                        <table class="table table-responsive" id="datatables1">
                             <thead>
                                 <tr>
                                     <th>Tanggal Transaksi</th>
-                                    <th>Nominal</th>
                                     <th>Status</th>
-                                    <th>Deskripsi</th>
+                                    <th>Makanan</th>
+                                    <th>Qty</th>
+                                    <th>Harga</th>
+                                    <th>Total</th>
                                     <th>User</th>
                                 </tr>
                             </thead>
@@ -79,15 +95,17 @@ HIPHOP - DASHBOARD
                                 @foreach($transaction as $item)
                                     <tr>
                                         <td>{{$item->date_transaction}}</td>
-                                        <td>{{$item->amount}}</td>
                                         <td>@if($item->status == "1") <span class="badge badge-pill badge-light-success mr-1">Masuk</span> @else <span class="badge badge-pill badge-light-danger mr-1">Keluar</span> @endif</td>
-                                        <td>{{$item->description}}</td>
+                                        <td>{{$item->name}}</td>
+                                        <td>{{$item->qty}}</td>
+                                        <td>{{$item->price}}</td>
+                                        <td>{{$item->total}}</td>
                                         <td>{{$item->User->name}}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
-                    </div>
+                    {{-- </div> --}}
                 </div>
             </div>
         </div>

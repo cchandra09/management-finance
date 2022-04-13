@@ -29,20 +29,29 @@ class AdminController extends Controller
         if($user->role_id == 3){
             return redirect()->route('employee.dashboard');
         }
-        $transactionIn = Transaction::where('status', '1')
-                                    ->select(DB::raw('coalesce(SUM(amount), 0) as total_transaction_in'))
-                                    ->first()->total_transaction_in;
-        $transactionOut = Transaction::where('status', '0')
-                                    ->select(DB::raw('coalesce(SUM(amount), 0) as total_transaction_out'))
-                                    ->first()->total_transaction_out;
-        $transaction = Transaction::all();
-        if($transactionOut == 0){
+        // $transactionIn = Transaction::where('status', '1')
+        //                             ->select(DB::raw('coalesce(SUM(amount), 0) as total_transaction_in'))
+        //                             ->first()->total_transaction_in;
+        // $transactionOut = Transaction::where('status', '0')
+        //                             ->select(DB::raw('coalesce(SUM(amount), 0) as total_transaction_out'))
+        //                             ->first()->total_transaction_out;
+        $transactionPurcashePrice = Transaction::where('status', '1')
+                ->join('transaction_details as td', 'td.transaction_id', '=', 'transactions.id')
+                ->select(DB::raw('coalesce(SUM(td.purcashe_price), 0) as total_transaction_in'))
+                ->first()->total_transaction_in;
+        $transactionSalePrice = Transaction::where('status', '1')
+                ->join('transaction_details as td', 'td.transaction_id', '=', 'transactions.id')
+                ->select(DB::raw('coalesce(SUM(td.price), 0) as total_transaction_out'))
+                ->first()->total_transaction_out;
+        $transaction = Transaction::join('transaction_details as td', 'td.transaction_id', '=', 'transactions.id')->get();
+        if($transactionSalePrice == 0){
             $percentage = 100;
         }else{
-            $percentage = $transactionIn / $transactionOut * 100;
+            $percentage = $transactionPurcashePrice / $transactionSalePrice * 100;
         }
-        $differenceTransaction = $transactionIn - $transactionOut;
-        return view('admin.index', compact(['transaction', 'transactionIn', 'transactionOut', 'percentage', 'differenceTransaction']));
+        $differenceTransaction = $transactionSalePrice - $transactionPurcashePrice;
+        $tranactionAssetFirst = ($differenceTransaction/100) * 5;
+        return view('admin.index', compact(['transaction', 'tranactionAssetFirst','transactionPurcashePrice', 'transactionSalePrice', 'percentage', 'differenceTransaction']));
     }
 
     public function getUsers(Request $request){
@@ -51,9 +60,10 @@ class AdminController extends Controller
         if($user->role_id == 3){
             return redirect()->route('employee.dashboard');
         }
+        $code = Code::all();
         $user = User::where('role_id', 3)->get();
         $management = User::where('role_id', 2)->get();
-        return view('admin.users.index', compact(['user', 'management']));
+        return view('admin.users.index', compact(['user', 'management', 'code']));
     }
 
     public function detailUsers(Request $request, $id)
@@ -78,6 +88,7 @@ class AdminController extends Controller
                                         $query->whereDate('date_transaction', '>=', $request->start_date)
                                         ->whereDate('date_transaction', '<=', $request->end_date);
                                     })
+                                    ->join('transaction_details as td', 'td.transaction_id', '=', 'transactions.id')
                                     ->get();
 
         $transactionIn = Transaction::where('status', '1')
@@ -198,13 +209,16 @@ class AdminController extends Controller
             $menu = new Menu();
             $menu->name = $request->name;
             $menu->price = $request->price;
-            $menu->stock = $request->stock;
+            $menu->purchase_price = $request->purchase_price;
+            $menu->qty = $request->stock;
+            $menu->category = $request->category;
             $menu->save();
             DB::commit();
             return redirect()->route('admin.menu.index');
 
          }catch(\Exception $e){
              DB::rollback();
+             return $e->getMessage();
          }
      }
 
@@ -216,7 +230,9 @@ class AdminController extends Controller
            $menu = Menu::findOrFail($id);
            $menu->name = $request->name;
            $menu->price = $request->price;
-           $menu->stock = $request->stock;
+           $menu->purchase_price = $request->purchase_price;
+           $menu->qty = $request->stock;
+           $menu->category = $request->category;
            $menu->save();
         //    Menu::where('id', $id)->update([
         //     'name' => $request->name,
@@ -228,6 +244,7 @@ class AdminController extends Controller
 
         }catch(\Exception $e){
             DB::rollback();
+            return $e->getMessage();
         }
      }
      public function deleteMenu(Request $request, $id)
@@ -275,9 +292,18 @@ class AdminController extends Controller
                                     $query->whereDate('date_transaction', '>=', $request->start_date)
                                     ->whereDate('date_transaction', '<=', $request->end_date);
                                 })
+                                ->join('transaction_details as td', 'td.transaction_id', '=', 'transactions.id')
                                 ->get();
+        $total_transaction = Transaction::where('user_id', $user_id)
+                                ->when($request->start_date, function($query) use ($request) {
+                                    $query->whereDate('date_transaction', '>=', $request->start_date)
+                                    ->whereDate('date_transaction', '<=', $request->end_date);
+                                })
+                                ->select(DB::raw('COALESCE(SUM(amount), 0) as total_transaction'))
+                                ->first()->total_transaction;
+
         $name = "Laporant-transaction-".$user->name.".pdf";
-    	$pdf = PDF::loadview('admin.users.report-pdf',['transaction'=>$transaction, 'user' => $user]);
+    	$pdf = PDF::loadview('admin.users.report-pdf', ['transaction'=>$transaction, 'user' => $user, 'start_date' => $request->start_date, 'end_date' => $request->end_date, 'total_transaction' => $total_transaction]);
     	return $pdf->download($name);
     }
 
@@ -291,7 +317,8 @@ class AdminController extends Controller
                 'password' => Hash::make($request->password),
                 'user_password' => $request->password,
                 'role_id' => 2,
-                'role_name' => 'Employee',
+                'role_name' => 'Area Manager',
+                'district' => $request->district,
                 'code_angkringan' => '-'
             ]);
             DB::commit();
@@ -301,6 +328,70 @@ class AdminController extends Controller
             DB::rollback();
             return $e->getMessage();
         }
+    }
+    public function storeFrontOffice(Request $request){
+
+        DB::beginTransaction();
+        try{
+            User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'user_password' => $request->password,
+                'role_id' => 3,
+                'role_name' => 'Front Office',
+                'code_angkringan' => $request->code_angkringan
+            ]);
+            DB::commit();
+            return redirect()->back();
+
+        }catch(\Exception $e){
+            DB::rollback();
+            return $e->getMessage();
+        }
+    }
+
+    public function selectSearch(Request $request)
+    {
+    	$code_angkringan = [];
+
+        if($request->has('q')){
+            $search = $request->q;
+            $code_angkringan =Code::select("id", "code_angkringan")
+            		->where('code_angkringan', 'LIKE', "%$search%")
+            		->get();
+        }
+        return response()->json($code_angkringan);
+    }
+
+    public function usersIncome(Request $request)
+    {
+
+        $users = User::where('role_id', 3)->get();
+        foreach($users as $user){
+            $userPurchasePrice = Transaction::join('transaction_details as td', 'td.transaction_id', '=', 'transactions.id')
+                                        ->select(DB::raw('coalesce(SUM(td.purcashe_price), 0) as purchase'))
+                                        ->where('user_id', $user->id)
+                                        ->first()->purchase;
+            $userSalePrice = Transaction::join('transaction_details as td', 'td.transaction_id', '=', 'transactions.id')
+                                        ->select(DB::raw('coalesce(SUM(td.price), 0) as sales'))
+                                        ->where('user_id', $user->id)
+                                        ->first()->sales;
+
+            $userIncome = $userSalePrice - $userPurchasePrice;
+
+            $data = array(
+                'name' => $user->name,
+                'code_angkringan' => $user->code_angkringan,
+                'income' => $userIncome
+            );
+            $datas[] = $data;
+        }
+        array_multisort(array_map(function($element){
+            return $element['income'];
+        }, $datas), SORT_DESC, $datas);
+        return view('admin.users.income', compact(['datas']));
+
     }
 
  

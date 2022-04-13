@@ -20,7 +20,9 @@ HIPHOP - MENUS
                                     <th>id</th>
                                     <th>Menu</th>
                                     <th>Price</th>
+                                    <th>Pruchase Price</th>
                                     <th>Stock</th>
+                                    <th>Kategori</th>
                                     <th>Option</th>
                                 </tr>
                             </thead>
@@ -38,7 +40,9 @@ HIPHOP - MENUS
                                         <td>{{$no++}}</td>
                                         <td>{{$item->name}}</td>
                                         <td>{{$item->price}}</td>
-                                        <td>{{$item->stock}}</td>
+                                        <td>{{$item->purchase_price}}</td>
+                                        <td>{{$item->qty}}</td>
+                                        <td>{{$item->category}}</td>
                                         <td>
                                             <div class="dropdown">
                                                 <button type="button" class="btn btn-sm dropdown-toggle hide-arrow" data-toggle="dropdown">
@@ -86,14 +90,24 @@ HIPHOP - MENUS
                             <div class="input-group mb-2">
                                 <input type="text" class="form-control" name="name" placeholder="Nama Menu" aria-label="name" required/>
                             </div>
-                            <label for="price">Price</label>
+                            <label for="price">Sale Price</label>
                             <div class="input-group mb-2">
                                 <input type="text" class="form-control" name="price" placeholder="Harga" aria-label="price" required/>
+                            </div>
+                            <label for="price">Purchase Price</label>
+                            <div class="input-group mb-2">
+                                <input type="text" class="form-control" name="purchase_price" placeholder="Harga" aria-label="price" required/>
                             </div>
                             <label for="stock">stock</label>
                             <div class="input-group mb-2">
                                 <input type="text" class="form-control" name="stock" placeholder="Jumlah" aria-label="qty" required/>
                             </div>
+                            <label for="kategori">Kategori</label>
+                            <select class="form-control" name="category" id="docNo">
+                                <option value="">-- Pilih Kategori --</option>
+                                <option value="Makanan">Makanan</option>
+                                <option value="Minuman">Minuman</option>
+                            </select>
 
                             <div class="col-sm-9">
                                 <button type="submit" class="btn btn-primary btn-md" onclick="event.preventDefault(); document.getElementById('createMenu').submit();">Tambah</button>
@@ -132,10 +146,20 @@ HIPHOP - MENUS
                             <div class="input-group mb-2">
                                 <input type="text" value="{{$item->price}}" class="form-control" name="price" placeholder="Harga" aria-label="price" required/>
                             </div>
+                            <label for="price">purchase price</label>
+                            <div class="input-group mb-2">
+                                <input type="text" value="{{$item->purchase_price}}" class="form-control" name="purchase_price" placeholder="Harga" aria-label="price" required/>
+                            </div>
                             <label for="stock">stock</label>
                             <div class="input-group mb-2">
-                                <input type="text" value="{{$item->stock}}" class="form-control" name="stock" placeholder="Jumlah" aria-label="qty" required/>
+                                <input type="text" value="{{$item->qty}}" class="form-control" name="stock" placeholder="Jumlah" aria-label="qty" required/>
                             </div>
+                            <label for="kategori">Kategori</label>
+                            <select class="form-control" name="category" id="docNo" required>
+                                <option value="">-- Pilih Kategori --</option>
+                                <option value="Makanan">Makanan</option>
+                                <option value="Minuman">Minuman</option>
+                            </select>
 
                             <div class="col-sm-9">
                                 <button type="submit" class="btn btn-primary btn-md" onclick="event.preventDefault(); document.getElementById('updateMenu-{{$item->id}}').submit();">Edit</button>

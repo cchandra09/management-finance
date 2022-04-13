@@ -8,7 +8,7 @@ HIPHOP - REPORT
     <section id="dashboard-analytics">
         <h2>Pendapatan Default Hari ini</h2>
         <div class="row match-height">
-            <div class="col-lg-3 col-sm-2 col-12">
+            <div class="col-lg-2 col-sm-2 col-12">
                 <div class="card">
                     <div class="card-header flex-column align-items-start pb-0">
                         <div class="avatar bg-light-primary p-50 m-0">
@@ -22,7 +22,7 @@ HIPHOP - REPORT
                     <div id="gained-chart"></div>
                 </div>
             </div>
-            <div class="col-lg-3 col-sm-2 col-12">
+            <div class="col-lg-2 col-sm-2 col-12">
                 <div class="card">
                     <div class="card-header flex-column align-items-start pb-0">
                         <div class="avatar bg-light-primary p-50 m-0">
@@ -30,13 +30,13 @@ HIPHOP - REPORT
                                 <i data-feather="dollar-sign" class="font-medium-5"></i>
                             </div>
                         </div>
-                        <h2 class="font-weight-bolder mt-1">Rp{{$transactionIn}}</h2>
-                        <p class="card-text">Transaksi Masuk</p>
+                        <h2 class="font-weight-bolder mt-1">Rp{{$transactionPurcashePrice}}</h2>
+                        <p class="card-text">Transaksi Masuk Harga Beli</p>
                     </div>
                     <div id="gained-chart"></div>
                 </div>
             </div>
-            <div class="col-lg-3 col-sm-2 col-12">
+            <div class="col-lg-2 col-sm-2 col-12">
                 <div class="card">
                     <div class="card-header flex-column align-items-start pb-0">
                         <div class="avatar bg-light-warning p-50 m-0">
@@ -44,8 +44,8 @@ HIPHOP - REPORT
                                 <i data-feather="dollar-sign" class="font-medium-5"></i>
                             </div>
                         </div>
-                        <h2 class="font-weight-bolder mt-1">Rp{{$transactionOut}}</h2>
-                        <p class="card-text">Transaksi Keluar</p>
+                        <h2 class="font-weight-bolder mt-1">Rp{{$transactionSalePrice}}</h2>
+                        <p class="card-text">Transaksi Masuk Penjualan</p>
                     </div>
                     <div id="order-chart"></div>
                 </div>
@@ -60,6 +60,20 @@ HIPHOP - REPORT
                         </div>
                         <h2 class="font-weight-bolder mt-1">Rp{{$differenceTransaction}}</h2>
                         <p class="card-text">Pendapatan</p>
+                    </div>
+                    <div id="order-chart"></div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-sm-2 col-12">
+                <div class="card">
+                    <div class="card-header flex-column align-items-start pb-0">
+                        <div class="avatar bg-light-warning p-50 m-0">
+                            <div class="avatar-content">
+                                <i data-feather="dollar-sign" class="font-medium-5"></i>
+                            </div>
+                        </div>
+                        <h2 class="font-weight-bolder mt-1">Rp{{$tranactionAssetFirst}}</h2>
+                        <p class="card-text">5% Pendapatan</p>
                     </div>
                     <div id="order-chart"></div>
                 </div>
@@ -155,6 +169,7 @@ HIPHOP - REPORT
                                                        <td class="text-left">Transaksi</td>
                                                        <td class="text-right">Pemasukan</td>
                                                        <td class="text-right">Pengeluaran</td>
+                                                       <td class="text-right">Pendapatan 5%</td>
                                                        <td class="text-right">Selisih</td>
                                                    </tr>
                                                     @php $chartData = []; @endphp
@@ -167,6 +182,7 @@ HIPHOP - REPORT
                                                         <td class="text-left">{{ $any ? $data[$monthNumber]->count : 0 }}</td>
                                                         <td class="text-right">{{ formatNumber($income = ($any ? $data[$monthNumber]->income : 0)) }}</td>
                                                         <td class="text-right">{{ formatNumber($spending = ($any ? $data[$monthNumber]->spending : 0)) }}</td>
+                                                        <td class="text-right">{{ formatNumber($difference = ($any ? $data[$monthNumber]->tranactionAssetFirst : 0)) }}</td>
                                                         <td class="text-right">{{ formatNumber($difference = ($any ? $data[$monthNumber]->difference : 0)) }}</td>
                                                     </tr>
                                                     @php
@@ -247,14 +263,16 @@ HIPHOP - REPORT
                                                    </div>
                                                </div>
                                             </div>
-                                            <div class="card-datatable">
-                                                <table class="datatables-ajax table">
+                                            <div class="table-responsive">
+                                                <table class="table mb-0">
                                                     <thead>
                                                         <tr>
                                                             <th>Tanggal Transaksi</th>
-                                                            <th>Nominal</th>
                                                             <th>Status</th>
-                                                            <th>Deskripsi</th>
+                                                            <th>Makanan</th>
+                                                            <th>Harga</th>
+                                                            <th>Qty</th>
+                                                            <th>Total</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -267,9 +285,11 @@ HIPHOP - REPORT
                                                         @foreach($transaction as $item)
                                                             <tr>
                                                                 <td>{{$item->date_transaction}}</td>
-                                                                <td>{{$item->amount}}</td>
                                                                 <td>@if($item->status == "1") <span class="badge badge-pill badge-light-success mr-1">Masuk</span> @else <span class="badge badge-pill badge-light-danger mr-1">Keluar</span> @endif</td>
-                                                                <td>{{$item->description}}</td>
+                                                                <td>{{$item->name}}</td>
+                                                                <td>{{$item->price}}</td>
+                                                                <td>{{$item->qty}}</td>
+                                                                <td>{{$item->total}}</td>
                                                             </tr>
                                                         @endforeach
                                                     </tbody>

@@ -24,7 +24,8 @@ class User extends Authenticatable
         'role_id',
         'role_name',
         'code_angkringan',
-        'user_password'
+        'user_password',
+        'district'
     ];
 
     /**

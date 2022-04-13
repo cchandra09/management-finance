@@ -9,15 +9,25 @@
 		table tr th{
 			font-size: 9pt;
 		}
+        h1{
+            font-size: 24px;
+            font-family: Arial, Helvetica, sans-serif
+        }
+        h5{
+            font-size: 18px;
+            font-family: Arial, Helvetica, sans-serif
+        }
 	</style>
     <h1>Laporan {{$user->name}}</h1>
-	<table class="datatables-ajax table">
+    <h5>{{$start_date}} - {{$end_date}}</h5>
+	<table class="datatables-ajax table mt-3">
         <tr>
             <td>No</td>
             <td class="text-left">Tanggal</td>
-            <td class="text-right">Nominal</td>
-            <td class="text-right">Status</td>
-            <td class="text-right">Deskripsi</td>
+            <td class="text-left">Makanan</td>
+            <td class="text-left">Harga</td>
+            <td class="text-left">Qty</td>
+            <td class="text-left">Total</td>
         </tr>
          @php $no = 1; @endphp
          @foreach($transaction as $item)
@@ -25,9 +35,14 @@
             <tr>
                 <td>{{$no++}}</td>
                 <td>{{$item->date_transaction}}</td>
-                <td>{{$item->amount}}</td>
-                <td>{{($item->status == 1) ? 'MASUK' : 'KELUAR'}}</td>
-                <td>{{$item->description}}</td>
+                <td>{{$item->name}}</td>
+                <td>{{$item->price }}</td>
+                <td>{{$item->qty}}</td>
+                <td>{{$item->total}}</td>
+            </tr>
+            <tr>
+                <td colspan="5">Total Nominal Transaksi</td>
+                <td>{{$total_transaction}}</td>
             </tr>
 
          @endforeach

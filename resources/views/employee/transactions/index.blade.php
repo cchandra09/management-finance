@@ -57,8 +57,8 @@ HIPHOP - TRANSACTION
                                 <i data-feather="dollar-sign" class="font-medium-5"></i>
                             </div>
                         </div>
-                        <h2 class="font-weight-bolder mt-1">Rp{{$transactionIn}}</h2>
-                        <p class="card-text">Transaksi Masuk</p>
+                        <h2 class="font-weight-bolder mt-1">Rp{{$transactionPurcashePrice}}</h2>
+                        <p class="card-text">Transaksi Masuk Pembelian</p>
                     </div>
                     <div id="gained-chart"></div>
                 </div>
@@ -71,8 +71,8 @@ HIPHOP - TRANSACTION
                                 <i data-feather="dollar-sign" class="font-medium-5"></i>
                             </div>
                         </div>
-                        <h2 class="font-weight-bolder mt-1">Rp{{$transactionOut}}</h2>
-                        <p class="card-text">Transaksi Keluar</p>
+                        <h2 class="font-weight-bolder mt-1">Rp{{$transactionSalePrice}}</h2>
+                        <p class="card-text">Transaksi Masuk Penjualan</p>
                     </div>
                     <div id="order-chart"></div>
                 </div>
@@ -87,6 +87,20 @@ HIPHOP - TRANSACTION
                         </div>
                         <h2 class="font-weight-bolder mt-1">Rp{{$differenceTransaction}}</h2>
                         <p class="card-text">Selisih Transaksi</p>
+                    </div>
+                    <div id="order-chart"></div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-2 col-12">
+                <div class="card">
+                    <div class="card-header flex-column align-items-start pb-0">
+                        <div class="avatar bg-light-warning p-50 m-0">
+                            <div class="avatar-content">
+                                <i data-feather="dollar-sign" class="font-medium-5"></i>
+                            </div>
+                        </div>
+                        <h2 class="font-weight-bolder mt-1">Rp{{$tranactionAssetFirst}}</h2>
+                        <p class="card-text">5% Pendapatan</p>
                     </div>
                     <div id="order-chart"></div>
                 </div>
@@ -109,9 +123,11 @@ HIPHOP - TRANSACTION
                             <thead>
                                 <tr>
                                     <th>Tanggal Transaksi</th>
-                                    <th>Nominal</th>
                                     <th>Status</th>
-                                    <th>Deskripsi</th>
+                                    <th>Makanan</th>
+                                    <th>Qty</th>
+                                    <th>Harga</th>
+                                    <th>Total</th>
                                     <th>Option</th>
                                 </tr>
                             </thead>
@@ -124,23 +140,25 @@ HIPHOP - TRANSACTION
                                 @foreach($transaction as $item)
                                     <tr>
                                         <td>{{$item->date_transaction}}</td>
-                                        <td>{{$item->amount}}</td>
                                         <td>@if($item->status == "1") <span class="badge badge-pill badge-light-success mr-1">Masuk</span> @else <span class="badge badge-pill badge-light-danger mr-1">Keluar</span> @endif</td>
-                                        <td>{{$item->description}}</td>
+                                        <td>{{$item->name}}</td>
+                                        <td>{{$item->qty}}</td>
+                                        <td>{{$item->price}}</td>
+                                        <td>{{$item->total}}</td>
                                         <td>
                                             <div class="dropdown">
                                                 <button type="button" class="btn btn-sm dropdown-toggle hide-arrow" data-toggle="dropdown">
                                                     <i data-feather="more-vertical"></i>
                                                 </button>
                                                 <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="{{route('employee.transaction.edit', $item->id)}}">
+                                                    {{-- <a class="dropdown-item" href="{{route('employee.transaction.edit', $item->id)}}">
                                                         <i data-feather="edit-2" class="mr-50"></i>
                                                         <span>Edit</span>
-                                                    </a>
-                                                    {{-- <a class="dropdown-item" data-toggle="modal" href="#deleteModalTransaction-{{$item->id}}">
+                                                    </a> --}}
+                                                    <a class="dropdown-item" data-toggle="modal" href="#deleteModalTransaction-{{$item->id}}">
                                                         <i data-feather="trash" class="mr-50"></i>
                                                         <span>Delete</span>
-                                                    </a> --}}
+                                                    </a>
                                                 </div>
                                             </div>
                                         </td>

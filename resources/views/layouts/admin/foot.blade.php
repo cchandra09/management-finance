@@ -42,7 +42,8 @@
 
 <script src="{{ asset('app-assets/vendors/js/extensions/dropzone.min.js') }}"></script>
 <script src="{{ asset('app-assets/js/scripts/forms/form-file-uploader.js') }}"></script>
-
+<script src="../../../app-assets/vendors/js/forms/select/select2.full.min.js"></script>
+<script src="../../../app-assets/js/scripts/forms/form-select2.js"></script>
 <script src="{{ asset('app-assets/vendors/js/charts/apexcharts.min.js') }}"></script>
 {{-- <script src="{{ asset('app-assets/js/scripts/pages/dashboard-ecommerce.js') }}"></script> --}}
 
@@ -68,6 +69,11 @@
     $('#dataUser').DataTable();
 } );
   </script>
+<script>
+    $(document).ready(function() {
+        $('#datatables1').DataTable();
+    });
+</script>
   @yield('scripts')
 </body>
 

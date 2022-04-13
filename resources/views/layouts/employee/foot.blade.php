@@ -66,10 +66,11 @@
     });
 </script>
 <script>
-   $(document).ready(function() {
-    $('#dataUser').DataTable();
-} );
-  </script>
+    $(document).ready(function() {
+        $('#dataUser').DataTable();
+    } );
+</script>
+
   @yield('scripts')
 </body>
 

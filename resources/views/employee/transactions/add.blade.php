@@ -130,7 +130,12 @@ HIPHOP - TAMBAH TRANSAKSI
                         <div class="form-group">
                             <label for="price">Harga</label>
                             <input type="hidden" name="name" id="name" class="form-control" placeholder="nama" readonly/>
+                            <input type="hidden" name="category" id="category" class="form-control" placeholder="nama" readonly/>
                             <input type="text" name="price" id="harga" class="form-control" placeholder="harga" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label for="price">Harga Beli</label>
+                            <input type="text" name="purcashe_price" id="harga_beli" class="form-control" placeholder="harga" readonly />
                         </div>
                     
                         <div class="form-group">
@@ -169,7 +174,9 @@ HIPHOP - TAMBAH TRANSAKSI
                     if (response != null) {
                         $('#name').val(response.name);
                         $('#harga').val(response.price);
-                        $('#stock').val(response.stock);
+                        $('#harga_beli').val(response.purchase_price);
+                        $('#stock').val(response.qty);
+                        $('#category').val(response.category);
                         console.log(response);
                     }
                 }

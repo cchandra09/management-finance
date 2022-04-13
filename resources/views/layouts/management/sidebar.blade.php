@@ -11,7 +11,7 @@
     <div class="main-menu-content">
         <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
             <li class=" nav-item"><a class="d-flex align-items-center" href="{{route('management.dashboard')}}"><i data-feather="home"></i><span class="menu-title text-truncate" data-i18n="Dashboard">Dashboard</span></a>
-            <li class=" nav-item"><a class="d-flex align-items-center" href="{{ route('management.users') }}"><i data-feather='users'></i><span class="menu-title text-truncate" data-i18n="Users">karyawan</span></a>
+            <li class=" nav-item"><a class="d-flex align-items-center" href="{{ route('management.users') }}"><i data-feather='users'></i><span class="menu-title text-truncate" data-i18n="Users">Front Office</span></a>
         </ul>
     </div>
 </div>

@@ -68,6 +68,11 @@
     $('#dataUser').DataTable();
 } );
   </script>
+<script>
+    $(document).ready(function() {
+        $('#datatables1').DataTable();
+    });
+</script>
   @yield('scripts')
 </body>
 
